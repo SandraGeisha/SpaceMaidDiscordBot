@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Exurb1aBot.Util.EmbedBuilders;
 using Exurb1aBot.Model.ViewModel.WeatherModels;
 using Discord;
+using Exurb1aBot.Util.Parsers;
+using Exurb1aBot.Model.ViewModel.GithubModels;
 
 namespace Exurb1aBot.Modules {
     [Name("General Commands")]
@@ -43,13 +45,25 @@ namespace Exurb1aBot.Modules {
             public async Task Commands([Remainder] string s) {
                 await Commands();
             }
+        #endregion
+
+            #region Source
+                [Command("source")]
+                public async Task ShowGithubSource() {
+                    GithubModel gm = GithubParser.GetModel();
+                    EmbedBuilder ebm = await GithubEmbedBuilder.MakeGithubEmbed(gm, Context);
+                    await Context.Channel.SendMessageAsync(embed: ebm.Build());
+                }
+
+                [Command("source")]
+                public async Task ShowGithubSource([Remainder]string s) {
+                    await ShowGithubSource();
+                } 
             #endregion
 
+        #region Quick poll
 
-
-            #region Quick poll
-
-            [Command("qp")]
+        [Command("qp")]
             [RequireBotPermission(ChannelPermission.AddReactions)]
             public async Task QuickPoll([Remainder]string question) {
                 var res = await Context.Channel.SendMessageAsync(question);

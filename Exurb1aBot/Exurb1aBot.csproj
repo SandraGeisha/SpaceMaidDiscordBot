@@ -264,6 +264,7 @@
     <Compile Include="Model\Exceptions\QuoteExceptions\QouteNotFound.cs" />
     <Compile Include="Model\Exceptions\QuoteExceptions\UserNotFoundException.cs" />
     <Compile Include="Model\ViewModel\EntityUser.cs" />
+    <Compile Include="Model\ViewModel\GithubModels\GithubModel.cs" />
     <Compile Include="Model\ViewModel\ImageModels\ImageModel.cs" />
     <Compile Include="Model\ViewModel\WeatherModels\WeatherDescriptionModel.cs" />
     <Compile Include="Model\ViewModel\WeatherModels\WeatherMainModel.cs" />
@@ -279,9 +280,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\ApiHelper.cs" />
     <Compile Include="Util\EmbedBuilders\EmbedBuilderFunctions.cs" />
+    <Compile Include="Util\EmbedBuilders\GithubEmbedBuilder.cs" />
     <Compile Include="Util\EmbedBuilders\ImageEmbedBuilder.cs" />
     <Compile Include="Util\EmbedBuilders\WeatherEmbedBuilder.cs" />
     <Compile Include="Util\EmbedBuilders\YoutubeEmbedBuilder.cs" />
+    <Compile Include="Util\Parsers\GithubParser.cs" />
     <Compile Include="Util\Parsers\ImageParser.cs" />
     <Compile Include="Util\Parsers\WeatherProcessor.cs" />
     <Compile Include="Util\Parsers\YoutubeParser.cs" />
