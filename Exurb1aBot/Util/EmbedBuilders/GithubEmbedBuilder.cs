@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Exurb1aBot.Model.ViewModel.GithubModels;
+using Exurb1aBot.Util.Parsers;
 using System.Threading.Tasks;
 
 namespace Exurb1aBot.Util.EmbedBuilders {
@@ -9,7 +10,19 @@ namespace Exurb1aBot.Util.EmbedBuilders {
             EmbedBuilder emb = new EmbedBuilder() {
                 Color = Color.Teal,
                 Title = model.ProjectName,
+                Url = GithubParser.ProjectLink,
+                ThumbnailUrl = "https://i.imgur.com/ASk5DlY.png"
             };
+
+            emb.WithDescription(model.ProjectDescription);
+
+            emb.AddField("Commits", model.Commits, true);
+            emb.AddField("Stars", model.Stars, true);
+            emb.AddField("Watchers", model.Watchers, true);
+            emb.AddField("Author", model.AuthorName, true);
+
+            emb.AddField("Found a bug or want to request a feature?", model.IssueLink);
+
 
             EmbedFooterBuilder footer = await EmbedBuilderFunctions.AddFooter(context);
             footer.Text += " - Powered by Github";
