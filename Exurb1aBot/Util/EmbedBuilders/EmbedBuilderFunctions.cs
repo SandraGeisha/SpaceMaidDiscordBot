@@ -37,7 +37,7 @@ namespace Exurb1aBot.Util.EmbedBuilders {
         public async static Task<EmbedFooterBuilder> AddFooter(ICommandContext context) {
             IGuildUser user = await context.Guild.GetUserAsync((ulong)401452008957280257);
             embf.WithIconUrl(user.GetAvatarUrl());
-            embf.Text = $"Made by {user.Nickname}";
+            embf.Text = $"Made by {user.Nickname??user.Username}";
             return embf;
         }
 

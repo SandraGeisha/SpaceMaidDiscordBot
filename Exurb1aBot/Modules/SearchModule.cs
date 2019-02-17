@@ -147,7 +147,12 @@ namespace Exurb1aBot.Modules {
 
         private static async Task DeleteReactions(IMessage msg) {
             var ms = msg as IUserMessage;
-            await ms.RemoveAllReactionsAsync();
+            try {
+                await ms.RemoveAllReactionsAsync();
+            }catch(Discord.Net.HttpException e) {
+                if (e.HttpCode == System.Net.HttpStatusCode.NotFound)
+                    Console.WriteLine("The original message was deleted");
+            }
         } 
         #endregion
     }

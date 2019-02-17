@@ -39,7 +39,7 @@ namespace Exurb1aBot {
             _client.Log += Log;
             _client.ReactionAdded += ReactionAdded;
 
-            string token = "NTM5NTAzNjUwMDg3NjMyODk3.DzDYzA.2QDBJq136e4opUIyA-C-ErAsj2A"; // Remember to keep this private! Fuck off
+            string token = "NTM5NTAzNjUwMDg3NjMyODk3.D0sJGQ.KepoFHwT1dpkA1_Lxiu531oihQE"; // Remember to keep this private! Fuck off
             await _client.LoginAsync(TokenType.Bot, token);
             await _client.StartAsync();
 
