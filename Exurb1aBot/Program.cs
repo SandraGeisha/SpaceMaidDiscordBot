@@ -75,6 +75,7 @@ namespace Exurb1aBot {
                 .AddSingleton(_context)
                 .AddScoped< IQouteRepository, QouteRepository>()
                 .AddScoped<IUserRepository,UserRepository>()
+                .AddScoped<ILocationRepository,LocationRepository>()
                 .BuildServiceProvider();
         }
 

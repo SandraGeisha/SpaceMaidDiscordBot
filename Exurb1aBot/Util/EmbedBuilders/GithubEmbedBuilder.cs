@@ -21,7 +21,7 @@ namespace Exurb1aBot.Util.EmbedBuilders {
             emb.AddField("Watchers", model.Watchers, true);
             emb.AddField("Author", model.AuthorName, true);
 
-            emb.AddField("Found a bug or want to request a feature?", model.IssueLink);
+            emb.AddField("Found a bug,want to contribute or request a feature?", model.IssueLink);
 
 
             EmbedFooterBuilder footer = await EmbedBuilderFunctions.AddFooter(context);

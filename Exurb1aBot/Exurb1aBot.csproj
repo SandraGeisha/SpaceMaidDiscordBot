@@ -249,11 +249,15 @@
   <ItemGroup>
     <Compile Include="Data\ApplicationDbContext.cs" />
     <Compile Include="Data\Mapper\EntityUserMapper.cs" />
+    <Compile Include="Data\Mapper\LocationMapper.cs" />
     <Compile Include="Data\Mapper\QuoteMapper.cs" />
+    <Compile Include="Data\Repository\LocationRepository.cs" />
     <Compile Include="Data\Repository\QouteRepository.cs" />
     <Compile Include="Data\Repository\UserRepository.cs" />
+    <Compile Include="Model\Domain\ILocationRepository.cs" />
     <Compile Include="Model\Domain\IQouteRepository.cs" />
     <Compile Include="Model\Domain\IUserRepository.cs" />
+    <Compile Include="Model\Domain\Location.cs" />
     <Compile Include="Model\Domain\Quote.cs" />
     <Compile Include="Model\Domain\SearchEnum.cs" />
     <Compile Include="Model\Exceptions\ImageNotFoundException.cs" />
@@ -292,7 +296,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <Content Include="Exurb1a.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />
   </ItemGroup>
