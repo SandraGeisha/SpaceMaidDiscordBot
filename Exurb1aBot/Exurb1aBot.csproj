@@ -261,6 +261,8 @@
     <Compile Include="Model\Domain\Quote.cs" />
     <Compile Include="Model\Domain\SearchEnum.cs" />
     <Compile Include="Model\Exceptions\ImageNotFoundException.cs" />
+    <Compile Include="Model\Exceptions\LocationExceptions\NoLocationAssociatedException.cs" />
+    <Compile Include="Model\Exceptions\LocationExceptions\NoLocationFoundException.cs" />
     <Compile Include="Model\Exceptions\NoVideoFoundException.cs" />
     <Compile Include="Model\Exceptions\QuoteExceptions\EmptyQuoteException.cs" />
     <Compile Include="Model\Exceptions\QuoteExceptions\NoQuoteFoundException.cs" />
@@ -280,6 +282,7 @@
     <Compile Include="Modules\BasicModule.cs" />
     <Compile Include="Modules\QuoteModule.cs" />
     <Compile Include="Modules\SearchModule.cs" />
+    <Compile Include="Modules\WeatherModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\ApiHelper.cs" />
@@ -296,7 +299,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <Content Include="Exurb1a.db">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />
   </ItemGroup>

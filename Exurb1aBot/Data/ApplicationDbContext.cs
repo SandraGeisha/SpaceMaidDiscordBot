@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
 
 namespace Exurb1aBot.Data {
-    class ApplicationDbContext : DbContext {
+    public class ApplicationDbContext : DbContext {
 
         public DbSet<Quote> Quote {get;set;}
         public DbSet<EntityUser> Users { get; set; }

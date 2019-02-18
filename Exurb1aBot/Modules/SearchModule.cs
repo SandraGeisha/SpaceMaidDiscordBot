@@ -1,15 +1,16 @@
 ﻿using Discord;
 using Discord.Commands;
-using Discord.Rest;
 using Exurb1aBot.Model.ViewModel.WeatherModels;
 using Exurb1aBot.Model.ViewModel.YoutubeModels;
-using Exurb1aBot.Util;
 using System;
 using System.Threading.Tasks;
 using Exurb1aBot.Util.Parsers;
 using Exurb1aBot.Util.EmbedBuilders;
 using Exurb1aBot.Model.ViewModel.ImageModels;
 using Exurb1aBot.Model.Domain;
+using Exurb1aBot.Data.Repository;
+using Exurb1aBot.Model.ViewModel;
+using Exurb1aBot.Model.Exceptions.LocationExceptions;
 
 namespace Exurb1aBot.Modules {
     [Name("Search Commands")]
@@ -20,46 +21,21 @@ namespace Exurb1aBot.Modules {
         private static int _indx;
         private static SocketCommandContext _context;
         private static SearchEnum _enum;
+       
 
-        #region Weather
-        [Command("weather")]
-        [Alias("w")]
-        public async Task GetWeather([Remainder]string name) {
-            WeatherModel wm = await WeatherProcessor.GetWeatherDataName(name);
-            if (wm == null)
-                await Context.Channel.SendMessageAsync("We couldn't find the location, or perhaps you were searching for Birmingham ya drugie.");
-            else {
-                wm.FixMapping();
-                await WeatherEmbedBuilder.DisplayWeather(wm, Context);
-            }
-        }
-
-        [Command("weather")]
-        [Alias("w")]
-        public async Task GetWeather() {
-            await EmbedBuilderFunctions.GiveErrorSyntax("weather", new string[] { "**name**(required)" },
-                new string[] { $"{Program.prefix}w Birmingham", $"{Program.prefix}w  Bacon Level" }, Context);
-        }
-        #endregion
 
         #region Youtube
         [Command("youtube")]
         [Alias("yt")]
         public async Task YoutubeSearch() {
-            await EmbedBuilderFunctions.GiveErrorSyntax("youtube", new string[] { "**Search Term**(required, if multiple words use \"\")" },
-                new string[] { $"{Program.prefix}yt \"And nothing can ever ruin this\"", $"{Program.prefix}youtube \"27 Exurb1a\"",
+            await EmbedBuilderFunctions.GiveErrorSyntax("youtube", new string[] { "**Search Term**(required)" },
+                new string[] { $"{Program.prefix}yt And nothing can ever ruin this", $"{Program.prefix}youtube 27 Exurb1a",
                     $"{Program.prefix}yt cat" }, Context);
         }
 
         [Command("youtube")]
         [Alias("yt")]
-        public async Task YoutubeSearch(string s, [Remainder]string x) {
-            await YoutubeSearch();
-        }
-
-        [Command("youtube")]
-        [Alias("yt")]
-        public async Task YoutubeSearch(string searchterm) {
+        public async Task YoutubeSearch([Remainder]string searchterm) {
 
             if (_tracked != null)
                 await DeleteReactions(_tracked);

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace Exurb1aBot.Data.Repository {
-    class LocationRepository : ILocationRepository {
+    public class LocationRepository : ILocationRepository {
         private  DbSet<Location> _locations;
         private ApplicationDbContext _context;
 
@@ -33,7 +33,7 @@ namespace Exurb1aBot.Data.Repository {
         }
 
         public bool UserHasLocation(EntityUser user) {
-            return GetLocation(user) == null;
+            return GetLocation(user) != null;
         }
     }
 }

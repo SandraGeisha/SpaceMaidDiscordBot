@@ -18,7 +18,7 @@ namespace Exurb1aBot {
         private IServiceProvider _services;
         private CommandService _commands;
         private ApplicationDbContext _context;
-        public static string prefix = ".";
+        public static string prefix = "-";
 
         static void Main(string[] args) {
             new Program().MainAsync().GetAwaiter().GetResult();
@@ -96,7 +96,7 @@ namespace Exurb1aBot {
             SocketUserMessage msg = arg as SocketUserMessage;
             int argPos = 0;
 
-            if (msg.HasStringPrefix(".", ref argPos) || msg.HasMentionPrefix(_client.CurrentUser, ref argPos)){
+            if (msg.HasStringPrefix(prefix, ref argPos) || msg.HasMentionPrefix(_client.CurrentUser, ref argPos)){
                 var context = new SocketCommandContext(_client, msg);
                 IResult result = await _commands.ExecuteAsync(context, argPos, _services);
                 
@@ -154,6 +154,13 @@ namespace Exurb1aBot {
                     break;
                 case "Image not found":
                     await channel.SendMessageAsync("I couldn't find any images matching your request, sorry chap...");
+                    break;
+                case "We couldn't find a location":
+                    await channel.SendMessageAsync("We couldn't find the location, or perhaps you were searching for Birmingham ya drugie.");
+                    break;
+                case "There is no location set":
+                    await channel.SendMessageAsync("You don't have a location set you dummy, " +
+                        $"use the command `{prefix}weather set`");
                     break;
                 default:
                     await EmbedBuilderFunctions.UnhandledException(ex, channel);
