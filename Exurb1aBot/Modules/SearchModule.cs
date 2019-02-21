@@ -23,7 +23,7 @@ namespace Exurb1aBot.Modules {
         private static SearchEnum _enum;
        
 
-
+        /*
         #region Youtube
         [Command("youtube")]
         [Alias("yt")]
@@ -51,7 +51,7 @@ namespace Exurb1aBot.Modules {
             await AddReactions(_tracked);
         }
         #endregion
-
+        */
 
         [Command("image")]
         [Alias("img")]

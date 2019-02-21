@@ -13,7 +13,7 @@ namespace Exurb1aBot.Data {
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
             //optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=Exurb1a;Integrated Security=True");
-            SqliteConnection sql = new SqliteConnection($"Data Source=.\\Exurb1a.db");
+            SqliteConnection sql = new SqliteConnection($"Data Source=Exurb1a.db");
             sql.Open();
             optionsBuilder.UseSqlite(sql);
             optionsBuilder.EnableSensitiveDataLogging(true);

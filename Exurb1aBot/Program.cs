@@ -39,7 +39,7 @@ namespace Exurb1aBot {
             _client.Log += Log;
             _client.ReactionAdded += ReactionAdded;
 
-            string token = "NTM5NTAzNjUwMDg3NjMyODk3.D0sJGQ.KepoFHwT1dpkA1_Lxiu531oihQE"; // Remember to keep this private! Fuck off
+            string token = "NTQ4MjA0NjM2NzM4Mjg5NjY3.D1CEkg._6Q2hu-nWXqERqtqOBwkFV_axow"; // Remember to keep this private! Fuck off
             await _client.LoginAsync(TokenType.Bot, token);
             await _client.StartAsync();
 
@@ -57,7 +57,7 @@ namespace Exurb1aBot {
                     SearchModule.ChangeFrame(false);
             }if (reaction.Emote.Name == "💬" && !msg.Author.IsBot) {
                     await QuoteModule.BotAddQuote(_services.GetService<IQouteRepository>(), chanel, msg.Content,msg.Id, reaction.User.GetValueOrDefault(null) as IGuildUser
-                        , msg.Author as IGuildUser);
+                        , msg.Author as IGuildUser,msg.Timestamp.DateTime);
             }
         }
 

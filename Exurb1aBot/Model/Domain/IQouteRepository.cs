@@ -1,4 +1,5 @@
 ﻿using Discord;
+using System;
 using System.Collections.Generic;
 
 namespace Exurb1aBot.Model.Domain {
@@ -12,7 +13,7 @@ namespace Exurb1aBot.Model.Domain {
             void AddQuote(Quote quote);
             void RemoveQuote(int id);
             void SaveChanges();
-            bool MessageExists(ulong id);
+            bool MessageExists(string text, IGuildUser user, DateTime time);
         #endregion
     }
 }

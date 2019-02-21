@@ -16,7 +16,7 @@ namespace Exurb1aBot.Data.Repository {
 
         public QouteRepository(ApplicationDbContext context) {
             Quotes = context.Quote;
-            _context = context;         
+            _context = context;
         }
 
         public void AddQuote(Quote quote) {
@@ -40,7 +40,7 @@ namespace Exurb1aBot.Data.Repository {
 
             if (q == null)
                 throw new QouteNotFound();
-            
+
             return q;
         }
 
@@ -57,7 +57,7 @@ namespace Exurb1aBot.Data.Repository {
                 throw new NoQuoteFoundException();
 
             int r = rand.Next(GetCountUser(id));
-            return Quotes.Where(q => q.Qoutee.Id == id).ToList()[r];     
+            return Quotes.Where(q => q.Qoutee.Id == id).ToList()[r];
         }
 
 
@@ -75,8 +75,13 @@ namespace Exurb1aBot.Data.Repository {
             return id;
         }
 
-        public bool MessageExists(ulong id) {
-           return Quotes.Where(q => q.msgId == id).Count() >= 1;
+        public bool MessageExists(string text, IGuildUser user, DateTime time) {
+
+            return Quotes.Where(q =>
+                     q.QuoteText == text && q.Qoutee.Id == user.Id
+                     && q.Time == time
+                    ).Count() >= 1;
+
         }
     }
 }

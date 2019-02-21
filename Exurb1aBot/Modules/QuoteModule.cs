@@ -103,12 +103,12 @@ namespace Exurb1aBot.Modules {
 
         }
 
-        public static async Task BotAddQuote(IQouteRepository _quoteRepo,IMessageChannel channel,string quote,ulong msgId, IGuildUser creator, IGuildUser quotee) {
-            if (!_quoteRepo.MessageExists(msgId)) {
+        public static async Task BotAddQuote(IQouteRepository _quoteRepo,IMessageChannel channel,string quote,ulong msgId, IGuildUser creator, IGuildUser quotee,DateTime time) {
+            if (!_quoteRepo.MessageExists(quote,quotee,time)) {
                 EntityUser cr = new EntityUser(creator);
                 EntityUser quotee2 = new EntityUser(quotee);
 
-                Quote q = new Quote(quote, cr, quotee2, DateTime.Now) {
+                Quote q = new Quote(quote, cr, quotee2, time) {
                     msgId = msgId
                 };
 
@@ -116,7 +116,7 @@ namespace Exurb1aBot.Modules {
                 _quoteRepo.SaveChanges();
 
                 int id = _quoteRepo.GetId(q);
-                await channel.SendMessageAsync($"quote **{q.QuoteText}** by **{q.Qoutee.Username}** added with id {id}");
+                await channel.SendMessageAsync($"quote **{q.QuoteText.Replace("@", "#")}** by **{q.Qoutee.Username}** added with id {id}");
             }
         }
         #endregion
@@ -199,10 +199,10 @@ namespace Exurb1aBot.Modules {
             if (q == null)
                 throw new QouteNotFound();
 
-            if (Author.GuildPermissions.ManageMessages || q.Creator.Id == Author.Id || q.Qoutee.Id == Author.Id) {
+            if (Author.GuildPermissions.ManageNicknames || q.Creator.Id == Author.Id || q.Qoutee.Id == Author.Id) {
                 _qouteRepo.RemoveQuote(id);
                 _qouteRepo.SaveChanges();
-                await Context.Channel.SendMessageAsync($"Quote {q.Id} \"{q.QuoteText}\" by {q.Qoutee.Username} deleted");
+                await Context.Channel.SendMessageAsync($"Quote {q.Id} \"{q.QuoteText.Replace("@","#")}\" by {q.Qoutee.Username} deleted");
             }
             else
                 await Context.Channel.SendMessageAsync("You can't delete someone elses quotes");
