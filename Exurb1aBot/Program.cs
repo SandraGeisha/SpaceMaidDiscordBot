@@ -50,11 +50,21 @@ namespace Exurb1aBot {
 
         private async Task ReactionAdded(Cacheable<IUserMessage,ulong> ch,ISocketMessageChannel chanel,SocketReaction reaction) {
             IUserMessage msg = await ch.GetOrDownloadAsync();
-            if (msg.Id == SearchModule._tracked?.Id && reaction.UserId!=_client.CurrentUser.Id) {
-                if (reaction.Emote.Name == "➡")
-                    SearchModule.ChangeFrame(true);
-                if (reaction.Emote.Name == "⬅")
-                    SearchModule.ChangeFrame(false);
+            if ((msg.Id == SearchModule._tracked?.Id || AdminModule._trackedList?.Id == msg.Id)
+                && reaction.UserId!=_client.CurrentUser.Id) {
+                if (reaction.Emote.Name == "➡") {
+                    if(msg.Id == SearchModule._tracked?.Id)
+                        SearchModule.ChangeFrame(true);
+                    else
+                        await AdminModule.ChangeIndex((ISocketMessageChannel)msg.Channel, true);
+
+                }
+                if (reaction.Emote.Name == "⬅") {
+                    if (msg.Id == SearchModule._tracked?.Id)
+                        SearchModule.ChangeFrame(false);
+                    else
+                        await AdminModule.ChangeIndex((ISocketMessageChannel)msg.Channel, false);
+                }
             }if (reaction.Emote.Name == "💬" && !msg.Author.IsBot) {
                     await QuoteModule.BotAddQuote(_services.GetService<IQouteRepository>(), chanel, msg.Content,msg.Id, reaction.User.GetValueOrDefault(null) as IGuildUser
                         , msg.Author as IGuildUser,msg.Timestamp.DateTime);
@@ -64,8 +74,6 @@ namespace Exurb1aBot {
         private void DatabaseConnection() {
              _context = new ApplicationDbContext();
             Console.WriteLine("Initializing database");
-            //_context.Database.EnsureDeleted();
-            //_context.Database.EnsureCreated();
             _context.Initialize();
         }
 
@@ -76,6 +84,7 @@ namespace Exurb1aBot {
                 .AddScoped< IQouteRepository, QouteRepository>()
                 .AddScoped<IUserRepository,UserRepository>()
                 .AddScoped<ILocationRepository,LocationRepository>()
+                .AddScoped<IBannedWordsRepository,BannedWordsRepository>()
                 .BuildServiceProvider();
         }
 
@@ -149,18 +158,21 @@ namespace Exurb1aBot {
                 case "we couldn't find the quote":
                     await channel.SendMessageAsync("I couldn't find the quote you're looking for.");
                     break;
-                case "We couldn't find the video you're looking for":
-                    await channel.SendMessageAsync("I couldn't find any videos, sorry chap...");
-                    break;
                 case "Image not found":
                     await channel.SendMessageAsync("I couldn't find any images matching your request, sorry chap...");
                     break;
                 case "We couldn't find a location":
                     await channel.SendMessageAsync("We couldn't find the location, or perhaps you were searching for Birmingham ya drugie.");
                     break;
+                case "word already banned":
+                    await channel.SendMessageAsync("Banning a word twice won't unban it ;) ");
+                    break;
                 case "There is no location set":
                     await channel.SendMessageAsync("You don't have a location set you dummy, " +
                         $"use the command `{prefix}weather set`");
+                    break;
+                case "word not banned":
+                    await channel.SendMessageAsync($"This word is not in the banlist. To view the list use `{prefix}banword list`");
                     break;
                 default:
                     await EmbedBuilderFunctions.UnhandledException(ex, channel);

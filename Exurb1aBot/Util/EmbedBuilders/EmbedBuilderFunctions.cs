@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Exurb1aBot.Util.Extensions;
 
 namespace Exurb1aBot.Util.EmbedBuilders {
     public static class EmbedBuilderFunctions {
@@ -32,6 +33,25 @@ namespace Exurb1aBot.Util.EmbedBuilders {
             ebm.WithFooter(AddFooter(context).Result);
 
             await context.Channel.SendMessageAsync(embed: ebm.Build());
+        }
+
+        public async static Task<EmbedBuilder> MakeHelp(string title,string description,
+            string url,string commandName,string[] parameters, string[] Examples,ICommandContext context) {
+            EmbedBuilder eb = new EmbedBuilder();
+
+            eb.WithColor(Color.Teal);
+            eb.WithTitle(title);
+
+            eb.WithDescription(description);
+            eb.WithThumbnailUrl(url);
+
+            eb.AddField("command name", commandName, true);
+            eb.AddField("Parameters", string.Join(",",parameters), true);
+            eb.AddField("Examples", string.Join("\r\n",Examples));
+
+            eb.WithFooter(await AddFooter(context));
+
+            return eb;
         }
 
         public async static Task<EmbedFooterBuilder> AddFooter(ICommandContext context) {
@@ -71,7 +91,7 @@ namespace Exurb1aBot.Util.EmbedBuilders {
             if (ebm.ThumbnailUrl == null)
                 ebm.WithThumbnailUrl("https://discordapp.com/assets/dd4dbc0016779df1378e7812eabaa04d.png");
 
-            ebm.AddField("Quote", $"```\r\n{q.QuoteText}\r\n```");
+            ebm.AddField("Quote", $"```\r\n{q.QuoteText.RemoveAbuseCharacters()}\r\n```");
 
             EmbedFooterBuilder efb = new EmbedFooterBuilder();
             IGuildUser creator = users[1];

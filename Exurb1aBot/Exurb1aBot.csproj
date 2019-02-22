@@ -248,27 +248,32 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\ApplicationDbContext.cs" />
+    <Compile Include="Data\Mapper\BannedWordMapper.cs" />
     <Compile Include="Data\Mapper\EntityUserMapper.cs" />
     <Compile Include="Data\Mapper\LocationMapper.cs" />
     <Compile Include="Data\Mapper\QuoteMapper.cs" />
+    <Compile Include="Data\Repository\BannedWordsRepository.cs" />
     <Compile Include="Data\Repository\LocationRepository.cs" />
     <Compile Include="Data\Repository\QouteRepository.cs" />
     <Compile Include="Data\Repository\UserRepository.cs" />
+    <Compile Include="Model\Domain\IBannedWordsRepository.cs" />
     <Compile Include="Model\Domain\ILocationRepository.cs" />
     <Compile Include="Model\Domain\IQouteRepository.cs" />
     <Compile Include="Model\Domain\IUserRepository.cs" />
     <Compile Include="Model\Domain\Location.cs" />
     <Compile Include="Model\Domain\Quote.cs" />
     <Compile Include="Model\Domain\SearchEnum.cs" />
+    <Compile Include="Model\Exceptions\BannedWordExceptions\WordAlreadyBannedException.cs" />
+    <Compile Include="Model\Exceptions\BannedWordExceptions\WordNotBannedException.cs" />
     <Compile Include="Model\Exceptions\ImageNotFoundException.cs" />
     <Compile Include="Model\Exceptions\LocationExceptions\NoLocationAssociatedException.cs" />
     <Compile Include="Model\Exceptions\LocationExceptions\NoLocationFoundException.cs" />
-    <Compile Include="Model\Exceptions\NoVideoFoundException.cs" />
     <Compile Include="Model\Exceptions\QuoteExceptions\EmptyQuoteException.cs" />
     <Compile Include="Model\Exceptions\QuoteExceptions\NoQuoteFoundException.cs" />
     <Compile Include="Model\Exceptions\QuoteExceptions\NoQuotesException.cs" />
     <Compile Include="Model\Exceptions\QuoteExceptions\QouteNotFound.cs" />
     <Compile Include="Model\Exceptions\QuoteExceptions\UserNotFoundException.cs" />
+    <Compile Include="Model\ViewModel\BannedWord.cs" />
     <Compile Include="Model\ViewModel\EntityUser.cs" />
     <Compile Include="Model\ViewModel\GithubModels\GithubModel.cs" />
     <Compile Include="Model\ViewModel\ImageModels\ImageModel.cs" />
@@ -277,7 +282,6 @@
     <Compile Include="Model\ViewModel\WeatherModels\WeatherModel.cs" />
     <Compile Include="Model\ViewModel\WeatherModels\WeatherSysModel.cs" />
     <Compile Include="Model\ViewModel\WeatherModels\WeatherWindModel.cs" />
-    <Compile Include="Model\ViewModel\YoutubeModels\YoutubeViewModel.cs" />
     <Compile Include="Modules\AdminModule.cs" />
     <Compile Include="Modules\BasicModule.cs" />
     <Compile Include="Modules\QuoteModule.cs" />
@@ -290,11 +294,10 @@
     <Compile Include="Util\EmbedBuilders\GithubEmbedBuilder.cs" />
     <Compile Include="Util\EmbedBuilders\ImageEmbedBuilder.cs" />
     <Compile Include="Util\EmbedBuilders\WeatherEmbedBuilder.cs" />
-    <Compile Include="Util\EmbedBuilders\YoutubeEmbedBuilder.cs" />
+    <Compile Include="Util\Extensions\ExtensionMethods.cs" />
     <Compile Include="Util\Parsers\GithubParser.cs" />
     <Compile Include="Util\Parsers\ImageParser.cs" />
     <Compile Include="Util\Parsers\WeatherProcessor.cs" />
-    <Compile Include="Util\Parsers\YoutubeParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

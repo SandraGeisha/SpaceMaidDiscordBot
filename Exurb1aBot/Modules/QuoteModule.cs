@@ -1,6 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
-using Exurb1aBot.Data.Repository;
+using Exurb1aBot.Util.Extensions;
 using Exurb1aBot.Model.Domain;
 using Exurb1aBot.Model.Exceptions.QuoteExceptions;
 using Exurb1aBot.Model.ViewModel;
@@ -45,27 +45,11 @@ namespace Exurb1aBot.Modules {
         #region help
         [Command("help")]
         public async Task DisplayHelp() {
-            EmbedBuilder eb = new EmbedBuilder();
-
-            eb.WithColor(Color.Teal);
-            eb.WithTitle("Quote command help");
-
-            eb.WithDescription("A command made for the purposes of quoting");
-            eb.WithThumbnailUrl("https://static.thenounproject.com/png/81720-200.png");
-
-            eb.AddField("command name", "quote", true);
-            eb.AddField("Parameters", "help,get,random,user,remove", true);
-            eb.AddField("Examples", "quote help \r\n" +
-                "quote add \"I wanna be called margret\" @27#2727 \r\n" +
-                "quote remove 123456789\r\nquote random\r\nquote get 23\r\nquote user @Margret#0062");
-
-            #region footer
-            IGuildUser user = await Context.Guild.GetUserAsync((ulong)401452008957280257);
-            EmbedFooterBuilder ebf = new EmbedFooterBuilder();
-            ebf.WithIconUrl(user.GetAvatarUrl());
-            ebf.Text = $"Made by {user.Username}";
-            eb.WithFooter(ebf);
-            #endregion
+            EmbedBuilder eb = await EmbedBuilderFunctions.MakeHelp("Quote command help", 
+                "A command made for the purposes of quoting",
+               "https://static.thenounproject.com/png/81720-200.png", "quote", new string[] { "help", "get",
+                   "random", "user", "remove" }, new string[] { "quote help", "quote add \"I wanna be called margret\" @27#2727"
+                ,"quote remove 123456789","quote random","quote get 23","quote user @Margret#0062"}, Context);
 
             await Context.Channel.SendMessageAsync(embed: eb.Build());
         } 
@@ -99,7 +83,7 @@ namespace Exurb1aBot.Modules {
             _qouteRepo.SaveChanges();
 
             int id = _qouteRepo.GetId(q);
-            await Context.Channel.SendMessageAsync($"quote **{q.QuoteText.Replace("@","#")}** by **{q.Qoutee.Username}** added with id {id}");
+            await Context.Channel.SendMessageAsync($"quote **{q.QuoteText.RemoveAbuseCharacters()}** by **{q.Qoutee.Username}** added with id {id}");
 
         }
 
@@ -116,7 +100,7 @@ namespace Exurb1aBot.Modules {
                 _quoteRepo.SaveChanges();
 
                 int id = _quoteRepo.GetId(q);
-                await channel.SendMessageAsync($"quote **{q.QuoteText.Replace("@", "#")}** by **{q.Qoutee.Username}** added with id {id}");
+                await channel.SendMessageAsync($"quote **{q.QuoteText.RemoveAbuseCharacters()}** by **{q.Qoutee.Username}** added with id {id}");
             }
         }
         #endregion
@@ -202,7 +186,7 @@ namespace Exurb1aBot.Modules {
             if (Author.GuildPermissions.ManageNicknames || q.Creator.Id == Author.Id || q.Qoutee.Id == Author.Id) {
                 _qouteRepo.RemoveQuote(id);
                 _qouteRepo.SaveChanges();
-                await Context.Channel.SendMessageAsync($"Quote {q.Id} \"{q.QuoteText.Replace("@","#")}\" by {q.Qoutee.Username} deleted");
+                await Context.Channel.SendMessageAsync($"Quote {q.Id} \"{q.QuoteText.RemoveAbuseCharacters()}\" by {q.Qoutee.Username} deleted");
             }
             else
                 await Context.Channel.SendMessageAsync("You can't delete someone elses quotes");
