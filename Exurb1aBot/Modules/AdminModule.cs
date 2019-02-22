@@ -77,7 +77,7 @@ namespace Exurb1aBot.Modules {
                     await RemoveBanWord(string.Join(" ", command).Remove(0, 7));
                     break;
                 case "list":
-                    await ViewBannedWordList(string.Join(" ", command).Remove(0, 5));
+                    await ViewBannedWordList(string.Join(" ", command).Remove(0, 4));
                     break;
                 default:
                     await BanWordHelp();
