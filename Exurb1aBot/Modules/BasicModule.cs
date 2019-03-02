@@ -1,17 +1,29 @@
 ﻿using Discord.Commands;
 using System.Threading.Tasks;
 using Exurb1aBot.Util.EmbedBuilders;
-using Exurb1aBot.Model.ViewModel.WeatherModels;
 using Discord;
 using Exurb1aBot.Util.Parsers;
 using Exurb1aBot.Model.ViewModel.GithubModels;
+using System;
 
 namespace Exurb1aBot.Modules {
     [Name("General Commands")]
     public class BasicModule:ModuleBase<SocketCommandContext>{
         #region Fields
         //necessary for the View All Commands
-        private readonly CommandService _cc; 
+        private readonly CommandService _cc;
+        private readonly string[] Insults = new string[]{
+            "I do not consider {{name}} a vulture. I consider {{name}} you something a vulture would eat.",
+            "People clap when they see {{name}}. They clap their hands over their eyes.",
+            "{{name}}'s face is proof that god has a sense of humour.",
+            "In the lands of the witless, {{name}} would be king.",
+            "I'd prefer a battle of wits, but {{name}} seems to be unarmed.",
+            "I regard {{name}} with an indifference bordering on aversion.",
+            "{{name}} is the reason god made the middlefinger.",
+            "Sometimes I need what only {{name}} can provide, Their absence.",
+            "{{name}}'s inferiority complex is fully justified.",
+            "{{name}} has delusions of adequacy."
+        };
         #endregion
 
         #region Constructor
@@ -58,8 +70,28 @@ namespace Exurb1aBot.Modules {
                 [Command("source")]
                 public async Task ShowGithubSource([Remainder]string s) {
                     await ShowGithubSource();
-                } 
-            #endregion
+                }
+        #endregion
+
+        #region Insult
+        [Command("insult")]
+        public async Task Insult() {
+            await EmbedBuilderFunctions.GiveErrorSyntax("Insult", new string[] { "**name**(@ mention,required)" },
+                new string[] { $"{Program.prefix}Insult @Exurb1aBot#0069" }, Context);
+        }
+
+        [Command("insult")]
+        public async Task Insult(IGuildUser user) {
+            Random r = new Random();
+            var message = Insults[r.Next(0, Insults.Length)].Replace("{{name}}",user.Mention);
+            await Context.Channel.SendMessageAsync(message);
+        }
+
+        [Command("insult")]
+        public async Task Insult([Remainder] string s) {
+            await Insult();
+        } 
+        #endregion
 
         #region Quick poll
 
