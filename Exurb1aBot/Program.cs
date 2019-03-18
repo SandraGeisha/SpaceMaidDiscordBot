@@ -11,6 +11,7 @@ using Exurb1aBot.Data.Repository;
 using Exurb1aBot.Util;
 using Exurb1aBot.Modules;
 using Exurb1aBot.Util.EmbedBuilders;
+using Exurb1aBot.Model.Exceptions.QuoteExceptions;
 
 namespace Exurb1aBot {
     class Program {
@@ -39,35 +40,41 @@ namespace Exurb1aBot {
             _client.Log += Log;
             _client.ReactionAdded += ReactionAdded;
 
-            string token = "NTQ4MjA0NjM2NzM4Mjg5NjY3.D1CEkg._6Q2hu-nWXqERqtqOBwkFV_axow"; // Remember to keep this private! Fuck off
+            string token = "NTQ4MjA0NjM2NzM4Mjg5NjY3.D3FbmQ.phV0OuNFXrtXPaATR2_ixh02l5g"; // Remember to keep this private! Fuck off
             await _client.LoginAsync(TokenType.Bot, token);
             await _client.StartAsync();
 
             // Block this task until the program is closed.
             await Task.Delay(-1);
         }
-
-
+   
+        
         private async Task ReactionAdded(Cacheable<IUserMessage,ulong> ch,ISocketMessageChannel chanel,SocketReaction reaction) {
             IUserMessage msg = await ch.GetOrDownloadAsync();
-            if ((msg.Id == SearchModule._tracked?.Id || AdminModule._trackedList?.Id == msg.Id)
+            if ((/*msg.Id == SearchModule._tracked?.Id || */AdminModule._trackedList?.Id == msg.Id)
                 && reaction.UserId!=_client.CurrentUser.Id) {
                 if (reaction.Emote.Name == "➡") {
-                    if(msg.Id == SearchModule._tracked?.Id)
-                        SearchModule.ChangeFrame(true);
-                    else
+                   /* if(msg.Id == SearchModule._tracked?.Id)
+                        SearchModule.ChangeFrame(true);*/
+                    //else
                         await AdminModule.ChangeIndex((ISocketMessageChannel)msg.Channel, true);
 
                 }
                 if (reaction.Emote.Name == "⬅") {
-                    if (msg.Id == SearchModule._tracked?.Id)
-                        SearchModule.ChangeFrame(false);
-                    else
-                        await AdminModule.ChangeIndex((ISocketMessageChannel)msg.Channel, false);
-                }
+                    /* if (msg.Id == SearchModule._tracked?.Id)
+                         SearchModule.ChangeFrame(false);
+                     else*/
+                    await AdminModule.ChangeIndex((ISocketMessageChannel)msg.Channel, false);
+                }   
             }if (reaction.Emote.Name == "💬" && !msg.Author.IsBot) {
-                    await QuoteModule.BotAddQuote(_services.GetService<IQouteRepository>(), chanel, msg.Content,msg.Id, reaction.User.GetValueOrDefault(null) as IGuildUser
-                        , msg.Author as IGuildUser,msg.Timestamp.DateTime);
+                    try {
+                        await QuoteModule.BotAddQuote(_services.GetService<IQouteRepository>(), chanel, msg.Content, msg.Id, reaction.User.GetValueOrDefault(null) as IGuildUser
+                            , msg.Author as IGuildUser, msg.Timestamp.DateTime);
+                    }
+                        catch (Exception e) {
+                        if (e.GetType().Equals(typeof(QuotingYourselfException)))
+                            await msg.Channel.SendMessageAsync("A bit narcissistic to quote yourself, no?");
+                    }
             }
         }
 
@@ -173,6 +180,9 @@ namespace Exurb1aBot {
                     break;
                 case "word not banned":
                     await channel.SendMessageAsync($"This word is not in the banlist. To view the list use `{prefix}banword list`");
+                    break;
+                case "You're trying to quote yourself":
+                    await channel.SendMessageAsync("A bit narcissistic to quote yourself, no?");
                     break;
                 default:
                     await EmbedBuilderFunctions.UnhandledException(ex, channel);

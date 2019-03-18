@@ -11,7 +11,6 @@ namespace Exurb1aBot.Util.Extensions {
     public static class ExtensionMethods {
         public static string RemoveAbuseCharacters(this string input) {
             return input
-                .Replace("@", "<At>")
                 .Replace("`", "'");
         }
 

@@ -21,6 +21,8 @@ namespace Exurb1aBot.Data.Mapper {
             builder.Property(q => q.QuoteText).HasMaxLength(100).IsRequired();
 
             builder.Property(q => q.msgId).HasMaxLength(100).HasDefaultValue(0);
+
+            builder.Ignore(q => q._context);
         }
     }
 }

@@ -75,15 +75,18 @@ namespace Exurb1aBot.Modules {
 
         [Command("add")]
         public async Task AddQuote(string quote, IGuildUser user) {
+            IGuildUser cr = Context.Message.Author as IGuildUser;
+
             EntityUser creator = new EntityUser(Context.Message.Author as IGuildUser);
             EntityUser quotee = new EntityUser(user);
-            Quote q = new Quote(quote.Replace("`","'"), creator, quotee, DateTime.Now);
+            Quote q = new Quote(quote.Replace("`","'"), creator, quotee, DateTime.Now,Context.Guild);
 
             _qouteRepo.AddQuote(q);
             _qouteRepo.SaveChanges();
 
             int id = _qouteRepo.GetId(q);
-            await Context.Channel.SendMessageAsync($"quote **{q.QuoteText.RemoveAbuseCharacters()}** by **{q.Qoutee.Username}** added with id {id}");
+            await Context.Channel.SendMessageAsync($"added quote **{q.QuoteText.RemoveAbuseCharacters()}** from" +
+                $" **{user.Nickname ??user.Username}**  quoted by **{cr.Nickname ?? cr.Username}** with id {id}");
 
         }
 
@@ -92,7 +95,7 @@ namespace Exurb1aBot.Modules {
                 EntityUser cr = new EntityUser(creator);
                 EntityUser quotee2 = new EntityUser(quotee);
 
-                Quote q = new Quote(quote, cr, quotee2, time) {
+                Quote q = new Quote(quote, cr, quotee2, time,creator.Guild) {
                     msgId = msgId
                 };
 
@@ -100,7 +103,9 @@ namespace Exurb1aBot.Modules {
                 _quoteRepo.SaveChanges();
 
                 int id = _quoteRepo.GetId(q);
-                await channel.SendMessageAsync($"quote **{q.QuoteText.RemoveAbuseCharacters()}** by **{q.Qoutee.Username}** added with id {id}");
+                await channel.SendMessageAsync($"added quote **{q.QuoteText.RemoveAbuseCharacters()}**" +
+                    $" from **{quotee.Nickname ?? quotee.Username}** quoted by **{creator.Nickname ?? creator.Username}** " +
+                    $"with id {id}");
             }
         }
         #endregion
@@ -184,9 +189,14 @@ namespace Exurb1aBot.Modules {
                 throw new QouteNotFound();
 
             if (Author.GuildPermissions.ManageNicknames || q.Creator.Id == Author.Id || q.Qoutee.Id == Author.Id) {
+
+                var users = await GetGuildUsers(q);
+                IGuildUser quotee = users[0];
+
                 _qouteRepo.RemoveQuote(id);
                 _qouteRepo.SaveChanges();
-                await Context.Channel.SendMessageAsync($"Quote {q.Id} \"{q.QuoteText.RemoveAbuseCharacters()}\" by {q.Qoutee.Username} deleted");
+
+                await Context.Channel.SendMessageAsync($"Quote {q.Id} \"{q.QuoteText.RemoveAbuseCharacters()}\" by {quotee.Nickname??quotee.Username} deleted");
             }
             else
                 await Context.Channel.SendMessageAsync("You can't delete someone elses quotes");

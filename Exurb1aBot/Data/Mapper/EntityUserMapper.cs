@@ -10,7 +10,7 @@ namespace Exurb1aBot.Data.Mapper {
             builder.HasKey(u => u.Id);
             builder.Property(u => u.Username).HasMaxLength(100);
             builder.Property(u => u.Username).HasColumnName("username").IsRequired();
-           
+
         }
     }
 }

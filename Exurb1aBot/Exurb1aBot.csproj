@@ -272,6 +272,7 @@
     <Compile Include="Model\Exceptions\QuoteExceptions\NoQuoteFoundException.cs" />
     <Compile Include="Model\Exceptions\QuoteExceptions\NoQuotesException.cs" />
     <Compile Include="Model\Exceptions\QuoteExceptions\QouteNotFound.cs" />
+    <Compile Include="Model\Exceptions\QuoteExceptions\QuotingYourselfException.cs" />
     <Compile Include="Model\Exceptions\QuoteExceptions\UserNotFoundException.cs" />
     <Compile Include="Model\ViewModel\BannedWord.cs" />
     <Compile Include="Model\ViewModel\EntityUser.cs" />

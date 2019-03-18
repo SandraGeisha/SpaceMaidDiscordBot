@@ -7,7 +7,7 @@ using Exurb1aBot.Util.EmbedBuilders;
 using Exurb1aBot.Model.ViewModel.ImageModels;
 using Exurb1aBot.Model.Domain;
 using Exurb1aBot.Util.Extensions;
-
+/*
 namespace Exurb1aBot.Modules {
     [Name("Search Commands")]
     public class SearchModule :ModuleBase<SocketCommandContext>{
@@ -82,3 +82,4 @@ namespace Exurb1aBot.Modules {
         #endregion
     }
 }
+*/
