@@ -109,6 +109,11 @@ namespace Exurb1aBot {
             if (arg == null || arg.Author.IsBot)
                 return;
 
+            if (arg.Channel.GetType() == typeof(SocketDMChannel)) {
+                await arg.Channel.SendMessageAsync("Stop creeping in my dm's");
+                return;
+            }
+
             SocketUserMessage msg = arg as SocketUserMessage;
             int argPos = 0;
 

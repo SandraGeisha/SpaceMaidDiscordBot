@@ -249,6 +249,7 @@
   <ItemGroup>
     <Compile Include="Data\ApplicationDbContext.cs" />
     <Compile Include="Data\Mapper\BannedWordMapper.cs" />
+    <Compile Include="Data\Mapper\CurrencyUserMapper.cs" />
     <Compile Include="Data\Mapper\EntityUserMapper.cs" />
     <Compile Include="Data\Mapper\LocationMapper.cs" />
     <Compile Include="Data\Mapper\QuoteMapper.cs" />
@@ -256,6 +257,9 @@
     <Compile Include="Data\Repository\LocationRepository.cs" />
     <Compile Include="Data\Repository\QouteRepository.cs" />
     <Compile Include="Data\Repository\UserRepository.cs" />
+    <Compile Include="Model\Domain\ConversionRate.cs" />
+    <Compile Include="Model\Domain\CurrencyEnum.cs" />
+    <Compile Include="Model\Domain\CurrencyUser.cs" />
     <Compile Include="Model\Domain\IBannedWordsRepository.cs" />
     <Compile Include="Model\Domain\ILocationRepository.cs" />
     <Compile Include="Model\Domain\IQouteRepository.cs" />
@@ -274,6 +278,7 @@
     <Compile Include="Model\Exceptions\QuoteExceptions\QouteNotFound.cs" />
     <Compile Include="Model\Exceptions\QuoteExceptions\QuotingYourselfException.cs" />
     <Compile Include="Model\Exceptions\QuoteExceptions\UserNotFoundException.cs" />
+    <Compile Include="Model\Exceptions\WouldMakeCurrencyNegative.cs" />
     <Compile Include="Model\ViewModel\BannedWord.cs" />
     <Compile Include="Model\ViewModel\EntityUser.cs" />
     <Compile Include="Model\ViewModel\GithubModels\GithubModel.cs" />
@@ -285,12 +290,14 @@
     <Compile Include="Model\ViewModel\WeatherModels\WeatherWindModel.cs" />
     <Compile Include="Modules\AdminModule.cs" />
     <Compile Include="Modules\BasicModule.cs" />
+    <Compile Include="Modules\CurrencyModule.cs" />
     <Compile Include="Modules\QuoteModule.cs" />
     <Compile Include="Modules\SearchModule.cs" />
     <Compile Include="Modules\WeatherModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\ApiHelper.cs" />
+    <Compile Include="Util\EmbedBuilders\CurrencyEmbedBuilder.cs" />
     <Compile Include="Util\EmbedBuilders\EmbedBuilderFunctions.cs" />
     <Compile Include="Util\EmbedBuilders\GithubEmbedBuilder.cs" />
     <Compile Include="Util\EmbedBuilders\ImageEmbedBuilder.cs" />

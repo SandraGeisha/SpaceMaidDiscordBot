@@ -52,17 +52,29 @@ namespace Exurb1aBot.Modules {
             #region Ping
             [Command("ping")]
             public async Task Ping() {
-                await Context.Channel.SendMessageAsync("Pong");
+                await Context.Channel.SendMessageAsync($"Pong ({GetMilli()}ms)");
             }
 
             [Command("ping")]
             public async Task Ping([Remainder] string s) {
                 await Ping();
             }
-            #endregion
+        #endregion
 
-            #region View all commands
-            [Command("commands")]
+        #region Pong
+            [Command("pong")]
+            public async Task Pong() {
+                await Context.Channel.SendMessageAsync($"Ping ({GetMilli()}ms)");
+            }
+
+            [Command("pong")]
+            public async Task Pong([Remainder] string s) {
+                await Pong();
+            }
+        #endregion
+
+        #region View all commands
+        [Command("commands")]
             [Alias("c")]
             public async Task Commands() {
                 await EmbedBuilderFunctions.GiveAllCommands(_cc, Context);
@@ -100,6 +112,15 @@ namespace Exurb1aBot.Modules {
         public async Task Insult(IGuildUser user) {
             Random r = new Random();
             var message = Insults[r.Next(0, Insults.Length)].Replace("{{name}}", user.Mention);
+
+            if(user.Id == (ulong)401452008957280257) {
+                message = $"Why would I insult my creator? He's already a beta male programmer without sex.";
+            }
+
+            if(user.IsBot && user.Id == Context.Client.CurrentUser.Id) {
+                message = "Leave me be I'm already a poor Ub3r knockoff";
+            }
+
             await Context.Channel.SendMessageAsync(message);
         }
 
@@ -117,7 +138,8 @@ namespace Exurb1aBot.Modules {
                 var res = await Context.Channel.SendMessageAsync(question);
                 IEmote check = new Emoji("✅");
                 IEmote cross = new Emoji("❌");
-                await res.AddReactionsAsync(new IEmote[] { check, cross });
+                IEmote neutral = new Emoji("❔");
+                await res.AddReactionsAsync(new IEmote[] { check, cross, neutral});
                 var bot = await Context.Channel.GetUserAsync(Context.Client.CurrentUser.Id) as IGuildUser;
                 var permissions = bot.GetPermissions(Context.Guild.GetChannel(Context.Message.Channel.Id));
                 if (permissions.ManageMessages)
@@ -130,7 +152,16 @@ namespace Exurb1aBot.Modules {
                     new string[] { $"{Program.prefix}qp Is the milk gone?" }, Context);
             }
 
-            #endregion 
+        #endregion
+
+
+        #region Helper commands
+            private double GetMilli() {
+                return Math.Round((double)((DateTimeOffset.Now.ToUnixTimeMilliseconds() -
+                    Context.Message.Timestamp.ToUnixTimeMilliseconds()) / 100));
+            } 
+        #endregion
+
         #endregion
     }
 }

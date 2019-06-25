@@ -14,6 +14,12 @@ namespace Exurb1aBot.Util.Extensions {
                 .Replace("`", "'");
         }
 
+        public static double RoundDownTwoDecimals(this double nRound) {
+            nRound = nRound * 100;
+            nRound = Math.Floor(nRound);
+            return (((double)nRound) / 100);
+        }
+
          public static async Task AddNavigations(this IMessage msg,int indx,int maxLength) {
             var ms = msg as IUserMessage;
 

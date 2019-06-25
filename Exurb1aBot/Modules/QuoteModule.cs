@@ -196,7 +196,10 @@ namespace Exurb1aBot.Modules {
                 _qouteRepo.RemoveQuote(id);
                 _qouteRepo.SaveChanges();
 
-                await Context.Channel.SendMessageAsync($"Quote {q.Id} \"{q.QuoteText.RemoveAbuseCharacters()}\" by {quotee.Nickname??quotee.Username} deleted");
+                if(quotee!=null)
+                    await Context.Channel.SendMessageAsync($"Quote {q.Id} \"{q.QuoteText.RemoveAbuseCharacters()}\" by {quotee.Nickname ?? quotee.Username} deleted");
+                else
+                    await Context.Channel.SendMessageAsync($"Quote {q.Id} \"{q.QuoteText.RemoveAbuseCharacters()}\" by {q.Qoutee.Username} deleted");
             }
             else
                 await Context.Channel.SendMessageAsync("You can't delete someone elses quotes");
