@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace Exurb1aBot.Util.EmbedBuilders {
     public class GithubEmbedBuilder {
+
         public static async Task<EmbedBuilder> MakeGithubEmbed(GithubModel model, ICommandContext context) {
             EmbedBuilder emb = new EmbedBuilder() {
                 Color = Color.Teal,
                 Title = model.ProjectName,
-                Url = GithubParser.ProjectLink,
+                Url = "https://github.com/SandraGeisha/Exurb1aBot",
                 ThumbnailUrl = "https://i.imgur.com/ASk5DlY.png"
             };
 

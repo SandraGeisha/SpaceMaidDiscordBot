@@ -9,6 +9,8 @@ namespace Exurb1aBot.Util {
             if(APIClient==null)
                 APIClient = new HttpClient();
 
+            APIClient.DefaultRequestHeaders.UserAgent.Clear();
+            APIClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("DiscordBot","1.0.0"));
             APIClient.DefaultRequestHeaders.Accept.Clear();
             APIClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }

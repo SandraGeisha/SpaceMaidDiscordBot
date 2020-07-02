@@ -58,9 +58,6 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.11.24.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlAgilityPack.1.11.24\lib\Net45\HtmlAgilityPack.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.1\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -329,7 +326,6 @@
     <Compile Include="Modules\AdminModule.cs" />
     <Compile Include="Modules\BasicModule.cs" />
     <Compile Include="Modules\QuoteModule.cs" />
-    <Compile Include="Modules\SearchModule.cs" />
     <Compile Include="Modules\WeatherModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -340,7 +336,6 @@
     <Compile Include="Util\EmbedBuilders\WeatherEmbedBuilder.cs" />
     <Compile Include="Util\Extensions\ExtensionMethods.cs" />
     <Compile Include="Util\Parsers\GithubParser.cs" />
-    <Compile Include="Util\Parsers\ImageParser.cs" />
     <Compile Include="Util\Parsers\WeatherProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
