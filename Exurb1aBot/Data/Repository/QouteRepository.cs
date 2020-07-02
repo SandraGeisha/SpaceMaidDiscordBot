@@ -5,8 +5,7 @@ using System.Linq;
 using System;
 using Exurb1aBot.Model.Exceptions.QuoteExceptions;
 using Discord;
-using Exurb1aBot.Model.ViewModel;
-using Microsoft.Data.Sqlite;
+using Exurb1aBot.Util.Extensions;
 
 namespace Exurb1aBot.Data.Repository {
     class QouteRepository : IQouteRepository {

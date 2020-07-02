@@ -12,7 +12,12 @@ using Exurb1aBot.Util;
 using Exurb1aBot.Modules;
 using Exurb1aBot.Util.EmbedBuilders;
 using Exurb1aBot.Model.Exceptions.QuoteExceptions;
+using Microsoft.Extensions.Configuration;
+using System.IO;
+using Microsoft.Extensions.Configuration.UserSecrets;
+using Microsoft.Extensions.Options;
 
+[assembly: UserSecretsId("Exurb1aBotSecrets")]
 namespace Exurb1aBot {
     class Program {
         private DiscordSocketClient _client;
@@ -40,7 +45,8 @@ namespace Exurb1aBot {
             _client.Log += Log;
             _client.ReactionAdded += ReactionAdded;
 
-            string token = "NTQ4MjA0NjM2NzM4Mjg5NjY3.D3FbmQ.phV0OuNFXrtXPaATR2_ixh02l5g"; // Remember to keep this private! Fuck off
+           string token = _services.GetService<IOptions<Secrets>>().Value.Token;
+
             await _client.LoginAsync(TokenType.Bot, token);
             await _client.StartAsync();
 
@@ -50,23 +56,8 @@ namespace Exurb1aBot {
    
         
         private async Task ReactionAdded(Cacheable<IUserMessage,ulong> ch,ISocketMessageChannel chanel,SocketReaction reaction) {
-            IUserMessage msg = await ch.GetOrDownloadAsync();
-            if ((/*msg.Id == SearchModule._tracked?.Id || */AdminModule._trackedList?.Id == msg.Id)
-                && reaction.UserId!=_client.CurrentUser.Id) {
-                if (reaction.Emote.Name == "➡") {
-                   /* if(msg.Id == SearchModule._tracked?.Id)
-                        SearchModule.ChangeFrame(true);*/
-                    //else
-                        await AdminModule.ChangeIndex((ISocketMessageChannel)msg.Channel, true);
-
-                }
-                if (reaction.Emote.Name == "⬅") {
-                    /* if (msg.Id == SearchModule._tracked?.Id)
-                         SearchModule.ChangeFrame(false);
-                     else*/
-                    await AdminModule.ChangeIndex((ISocketMessageChannel)msg.Channel, false);
-                }   
-            }if (reaction.Emote.Name == "💬" && !msg.Author.IsBot) {
+            IUserMessage msg = await ch.GetOrDownloadAsync();  
+            if (reaction.Emote.Name == "💬" && !msg.Author.IsBot) {
                     try {
                         await QuoteModule.BotAddQuote(_services.GetService<IQouteRepository>(), chanel, msg.Content, msg.Id, reaction.User.GetValueOrDefault(null) as IGuildUser
                             , msg.Author as IGuildUser, msg.Timestamp.DateTime);
@@ -85,13 +76,22 @@ namespace Exurb1aBot {
         }
 
         private void DependencyInjection() {
+            IConfigurationBuilder builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddEnvironmentVariables();
+
+            builder.AddUserSecrets<Secrets>();
+            IConfigurationRoot configuration = builder.Build();
+
+
             _services = new ServiceCollection()
                 .AddSingleton(_client)
                 .AddSingleton(_context)
                 .AddScoped< IQouteRepository, QouteRepository>()
                 .AddScoped<IUserRepository,UserRepository>()
                 .AddScoped<ILocationRepository,LocationRepository>()
-                .AddScoped<IBannedWordsRepository,BannedWordsRepository>()
+                .Configure<Secrets>(configuration.GetSection("Secrets"))
+                .AddOptions()
                 .BuildServiceProvider();
         }
 
@@ -194,6 +194,11 @@ namespace Exurb1aBot {
         public Task Log(LogMessage log) {
             Console.WriteLine(log.Message);
             return Task.CompletedTask;
+        }
+
+        public static void AddUserStore() {
+
+
         }
     }
 }

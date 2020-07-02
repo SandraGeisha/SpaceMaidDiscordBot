@@ -6,10 +6,11 @@ using Discord;
 using Exurb1aBot.Util.Parsers;
 using Exurb1aBot.Model.ViewModel.GithubModels;
 using System;
+using Exurb1aBot.Model.Domain;
 
 namespace Exurb1aBot.Modules {
     [Name("General Commands")]
-    public class BasicModule:ModuleBase<SocketCommandContext>{
+    public class BasicModule : ModuleBase<SocketCommandContext> {
         #region Fields
         //necessary for the View All Commands
         private readonly CommandService _cc;
@@ -34,7 +35,7 @@ namespace Exurb1aBot.Modules {
             "Brains aren't everything. In {{name}}s case they're nothing.",
             "{{name}} is an oxygen thief!",
             "The last time I saw something like {{name}} , I flushed it.",
-            "'m busy now. Can I ignore you some other time?",
+            "I am busy now. Can I ignore you some other time?",
             "{{name}} is the reason the gene pool needs a lifeguard.",
             "If {{name}} really spoke their mind, {{name}} would be speechless.",
             "As an outsider, what does {{name}} think of the human race?",
@@ -44,54 +45,44 @@ namespace Exurb1aBot.Modules {
 
         #region Constructor
         public BasicModule(CommandService cc) {
-                _cc = cc;
-            }
+            _cc = cc;
+        }
         #endregion
 
         #region Commands
-            #region Ping
-            [Command("ping")]
-            public async Task Ping() {
-                await Context.Channel.SendMessageAsync("Pong");
-            }
+        #region Ping & Pong
+        [Command("ping")]
+        public async Task Ping([Remainder] string s = "") {
+            await Context.Channel.SendMessageAsync($"Pong ({GetMS()} ms) :ping_pong:");
+        }
 
-            [Command("ping")]
-            public async Task Ping([Remainder] string s) {
-                await Ping();
-            }
-            #endregion
+        [Command("pong")]
+        public async Task Pong([Remainder] string s = "") {
+            await Context.Channel.SendMessageAsync($"Ping ({GetMS()} ms) :ping_pong:");
+        }
 
-            #region View all commands
-            [Command("commands")]
-            [Alias("c")]
-            public async Task Commands() {
-                await EmbedBuilderFunctions.GiveAllCommands(_cc, Context);
-            }
-
-            [Command("commands")]
-            [Alias("c")]
-            public async Task Commands([Remainder] string s) {
-                await Commands();
-            }
         #endregion
 
-            #region Source
-                [Command("source")]
-                public async Task ShowGithubSource() {
-                    GithubModel gm = GithubParser.GetModel();
-                    EmbedBuilder ebm = await GithubEmbedBuilder.MakeGithubEmbed(gm, Context);
-                    await Context.Channel.SendMessageAsync(embed: ebm.Build());
-                }
-
-                [Command("source")]
-                public async Task ShowGithubSource([Remainder]string s) {
-                    await ShowGithubSource();
-                }
+        #region View all commands
+        [Command("commands")]
+        [Alias("c")]
+        public async Task Commands([Remainder] string s = "") {
+            await EmbedBuilderFunctions.GiveAllCommands(_cc, Context);
+        }
         #endregion
 
-            #region Insult
+        #region Source
+        [Command("source")]
+        public async Task ShowGithubSource([Remainder]string s="") {
+            GithubModel gm = GithubParser.GetModel();
+            EmbedBuilder ebm = await GithubEmbedBuilder.MakeGithubEmbed(gm, Context);
+            await Context.Channel.SendMessageAsync(embed: ebm.Build());
+        }
+        #endregion
+
+        #region Insult
         [Command("insult")]
-        public async Task Insult() {
+        public async Task Insult([Remainder] string s="") {
             await EmbedBuilderFunctions.GiveErrorSyntax("Insult", new string[] { "**name**(@ mention,required)" },
                 new string[] { $"{Program.prefix}Insult @Exurb1aBot#0069" }, Context);
         }
@@ -99,38 +90,56 @@ namespace Exurb1aBot.Modules {
         [Command("insult")]
         public async Task Insult(IGuildUser user) {
             Random r = new Random();
-            var message = Insults[r.Next(0, Insults.Length)].Replace("{{name}}", user.Mention);
-            await Context.Channel.SendMessageAsync(message);
-        }
-
-        [Command("insult")]
-        public async Task Insult([Remainder] string s) {
-            await Insult();
+            if (!EasterInsultEggs(user)) {
+                var message = Insults[r.Next(0, Insults.Length)].Replace("{{name}}", user.Mention);
+                await Context.Channel.SendMessageAsync(message);
+            }
         }
         #endregion
 
-            #region Quick poll
+        #region Quick poll
 
         [Command("qp")]
-            [RequireBotPermission(ChannelPermission.AddReactions)]
-            public async Task QuickPoll([Remainder]string question) {
-                var res = await Context.Channel.SendMessageAsync(question);
-                IEmote check = new Emoji("✅");
-                IEmote cross = new Emoji("❌");
-                await res.AddReactionsAsync(new IEmote[] { check, cross });
-                var bot = await Context.Channel.GetUserAsync(Context.Client.CurrentUser.Id) as IGuildUser;
-                var permissions = bot.GetPermissions(Context.Guild.GetChannel(Context.Message.Channel.Id));
-                if (permissions.ManageMessages)
-                    await Context.Message.DeleteAsync();
+        [RequireBotPermission(ChannelPermission.AddReactions)]
+        public async Task QuickPoll([Remainder]string question) {
+            var res = await Context.Channel.SendMessageAsync(question);
+            IEmote check = new Emoji("✅");
+            IEmote cross = new Emoji("❌");
+            await res.AddReactionsAsync(new IEmote[] { check, cross });
+            var bot = await Context.Channel.GetUserAsync(Context.Client.CurrentUser.Id) as IGuildUser;
+            var permissions = bot.GetPermissions(Context.Guild.GetChannel(Context.Message.Channel.Id));
+            if (permissions.ManageMessages)
+                await Context.Message.DeleteAsync();
+        }
+
+        [Command("qp")]
+        public async Task QuickPoll() {
+            await EmbedBuilderFunctions.GiveErrorSyntax("qp", new string[] { "**name**(required)" },
+                new string[] { $"{Program.prefix}qp Is the milk gone?" }, Context);
+        }
+
+        #endregion
+
+        #region private commands
+        private int GetMS() {
+            DateTime time_message = Context.Message.Timestamp.DateTime;
+            return (int)Math.Round(DateTime.Now.Subtract(time_message).TotalMilliseconds / 100000);
+        }
+
+        private bool EasterInsultEggs(IGuildUser user) {
+            if (user.Id == Enums.SandraID) {
+                Context.Channel.SendMessageAsync("Why would I insult my owner? he's enough of a joke as is.");
+                return true;
             }
 
-            [Command("qp")]
-            public async Task QuickPoll() {
-                await EmbedBuilderFunctions.GiveErrorSyntax("qp", new string[] { "**name**(required)" },
-                    new string[] { $"{Program.prefix}qp Is the milk gone?" }, Context);
+            if (user.Id == Context.Client.CurrentUser.Id) {
+                Context.Channel.SendMessageAsync("Me? The knockoff Ub3r? Damn go insult one of your friends instead, oh wait... sorry.");
+                return true;
             }
 
-            #endregion 
+            return false;
+        }
+        #endregion
         #endregion
     }
 }

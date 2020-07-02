@@ -10,7 +10,6 @@ namespace Exurb1aBot.Data {
         public DbSet<Quote> Quote {get;set;}
         public DbSet<EntityUser> Users { get; set; }
         public DbSet<Location> Location { get; set; }
-        public DbSet<BannedWord> BannedWords { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
             //optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=Exurb1a;Integrated Security=True");
@@ -25,15 +24,13 @@ namespace Exurb1aBot.Data {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration<EntityUser>(new EntityUserMapper())
                         .ApplyConfiguration<Quote>(new QuoteMapper())
-                        .ApplyConfiguration<Location>(new LocationMapper())
-                        .ApplyConfiguration<BannedWord>(new BannedWordMapper());
+                        .ApplyConfiguration<Location>(new LocationMapper());
         }
 
         public void Initialize() {
             Quote.Load();
             Users.Load();
             Location.Load();
-            BannedWords.Load();
         }
     }
 }
