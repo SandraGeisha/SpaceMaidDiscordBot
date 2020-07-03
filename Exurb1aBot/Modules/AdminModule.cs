@@ -7,35 +7,34 @@ using Exurb1aBot.Util.Extensions;
 using System.Threading.Tasks;
 using System.Linq;
 using Discord.WebSocket;
+using Exurb1aBot.Util.Permissions;
 
-namespace Exurb1aBot.Modules { 
+namespace Exurb1aBot.Modules {
     [Name("Admin Commands")]
-   public class AdminModule : ModuleBase<SocketCommandContext> {
+    [RequireUserPermission(ChannelPermission.ManageMessages,Group ="perms")]
+    [RequireSandra(Group ="perms")]
+    public class AdminModule : ModuleBase<SocketCommandContext> {
 
         #region Shutdown Command
-        [Command("shutdown"), RequireUserPermission(ChannelPermission.ManageMessages)]
-        public async Task ShutDown() {
+        [Command("shutdown")]
+        public async Task ShutDown([Remainder]string s="") {
             await Context.Channel.SendMessageAsync("Shutting down...");
             Environment.Exit(0);
-        } 
+        }
         #endregion
 
         #region Stream Command
-        [Command("stream"), RequireUserPermission(ChannelPermission.ManageMessages)]
+
+        [Command("stream")]
         public async Task Mention(string name, string url = null) {
             await Context.Client.SetGameAsync(name, url, (url != null ? ActivityType.Streaming : ActivityType.Playing));
         }
 
-        [Command("stream"), RequireUserPermission(ChannelPermission.ManageMessages)]
-        public async Task Mention() {
+        [Command("stream")]
+        public async Task Mention([Remainder]string s ="") {
             await EmbedBuilderFunctions.GiveErrorSyntax("stream", new string[] { "**name**(required)", "**url**(optional,needs to be from twitch)" },
                 new string[] { $"{Program.prefix}stream \"existential despair\"",
                     $"{Program.prefix}stream \"existential despair\" \"https://www.twitch.tv/directory/game/Depression%20Quest\"" }, Context);
-        }
-
-        [Command("stream"), RequireUserPermission(ChannelPermission.ManageMessages)]
-        public async Task Mention([Remainder]string s) {
-            await Mention();
         }
         #endregion
     }

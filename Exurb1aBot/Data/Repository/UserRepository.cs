@@ -19,6 +19,10 @@ namespace Exurb1aBot.Data.Repository {
             return _users.ToList();
         }
 
+        public EntityUser GetUserById(ulong id) {
+            return _users.FirstOrDefault(u => u.Id == id);
+        }
+
         public void SaveChanges() {
             _context.SaveChanges();
         }

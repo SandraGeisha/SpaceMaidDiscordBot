@@ -6,6 +6,7 @@ namespace Exurb1aBot.Model.Domain {
         #region Methods
         IEnumerable<EntityUser> GetAllUsers();
         void SaveChanges();
+        EntityUser GetUserById(ulong id);
         #endregion
     }
 }
