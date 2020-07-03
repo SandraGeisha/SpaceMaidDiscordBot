@@ -2,22 +2,19 @@
 using Discord.Commands;
 using Exurb1aBot.Util.EmbedBuilders;
 using System;
-using Exurb1aBot.Model.Domain;
-using Exurb1aBot.Util.Extensions;
 using System.Threading.Tasks;
-using System.Linq;
-using Discord.WebSocket;
 using Exurb1aBot.Util.Permissions;
+using Discord.WebSocket;
 
 namespace Exurb1aBot.Modules {
     [Name("Admin Commands")]
-    [RequireUserPermission(ChannelPermission.ManageMessages,Group ="perms")]
-    [RequireSandra(Group ="perms")]
+    [RequireUserPermission(ChannelPermission.ManageMessages, Group = "perms")]
+    [RequireSandra(Group = "perms")]
     public class AdminModule : ModuleBase<SocketCommandContext> {
 
         #region Shutdown Command
         [Command("shutdown")]
-        public async Task ShutDown([Remainder]string s="") {
+        public async Task ShutDown([Remainder]string s = "") {
             await Context.Channel.SendMessageAsync("Shutting down...");
             Environment.Exit(0);
         }
@@ -31,10 +28,36 @@ namespace Exurb1aBot.Modules {
         }
 
         [Command("stream")]
-        public async Task Mention([Remainder]string s ="") {
+        public async Task Mention() {
             await EmbedBuilderFunctions.GiveErrorSyntax("stream", new string[] { "**name**(required)", "**url**(optional,needs to be from twitch)" },
                 new string[] { $"{Program.prefix}stream \"existential despair\"",
                     $"{Program.prefix}stream \"existential despair\" \"https://www.twitch.tv/directory/game/Depression%20Quest\"" }, Context);
+        }
+        #endregion
+
+        #region Nickname
+        [Command("nickname")]
+        public async Task ChangeNick(string name) {
+            IGuildUser user = Context.Guild.GetUser(Context.Client.CurrentUser.Id) as IGuildUser;
+
+            if (user.GuildPermissions.ChangeNickname) {
+                await user.ModifyAsync(u => u.Nickname = name, RequestOptions.Default);
+                return;
+            }
+
+            await Context.Message.Channel.SendMessageAsync("I lack the permissions to change my nickname");
+        }
+
+        [Command("nickname")]
+        public async Task ChangeNick() {
+            IGuildUser user = Context.Guild.GetUser(Context.Client.CurrentUser.Id) as IGuildUser;
+
+            if (user.GuildPermissions.ChangeNickname) {
+                await user.ModifyAsync(u => u.Nickname = user.Username, RequestOptions.Default);
+                return;
+            }
+
+            await Context.Message.Channel.SendMessageAsync("I lack the permissions to change my nickname");
         }
         #endregion
     }
