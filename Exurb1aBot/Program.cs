@@ -59,8 +59,10 @@ namespace Exurb1aBot {
             IUserMessage msg = await ch.GetOrDownloadAsync();  
             if (reaction.Emote.Name == "💬" && !msg.Author.IsBot) {
                     try {
-                        await QuoteModule.BotAddQuote(_services.GetService<IQouteRepository>(), chanel, msg.Content, msg.Id, reaction.User.GetValueOrDefault(null) as IGuildUser
-                            , msg.Author as IGuildUser, msg.Timestamp.DateTime);
+                    await QuoteModule.BotAddQuote(_services.GetService<IQouteRepository>(),
+                        _services.GetService<IScoreRepsitory>(), _services.GetService<IUserRepository>(),
+                        chanel, msg.Content, msg.Id, reaction.User.GetValueOrDefault(null) as IGuildUser
+                        , msg.Author as IGuildUser, msg.Timestamp.DateTime);
                     }
                         catch (Exception e) {
                         if (e.GetType().Equals(typeof(QuotingYourselfException)))
@@ -89,6 +91,7 @@ namespace Exurb1aBot {
                 .AddSingleton(_context)
                 .AddScoped< IQouteRepository, QouteRepository>()
                 .AddScoped<IUserRepository,UserRepository>()
+                .AddScoped<IScoreRepsitory,ScoreRepository>()
                 .AddScoped<ILocationRepository,LocationRepository>()
                 .Configure<Secrets>(configuration.GetSection("Secrets"))
                 .AddOptions()

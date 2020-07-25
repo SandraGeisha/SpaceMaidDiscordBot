@@ -6,8 +6,8 @@ using Exurb1aBot.Model.Exceptions.QuoteExceptions;
 using Exurb1aBot.Model.ViewModel;
 using Exurb1aBot.Util.EmbedBuilders;
 using System;
-using System.Net;
 using System.Threading.Tasks;
+using static Exurb1aBot.Model.Domain.Enums;
 
 namespace Exurb1aBot.Modules {
     [Name("Quoting Commands")]
@@ -15,13 +15,15 @@ namespace Exurb1aBot.Modules {
     public class QuoteModule:ModuleBase{
         #region Fields
         private readonly IUserRepository _userRepo;
-        private IQouteRepository _qouteRepo; 
+        private IQouteRepository _qouteRepo;
+        private readonly IScoreRepsitory _scoreRepo;
         #endregion
 
         #region Constructor
-        public QuoteModule(IQouteRepository quoteRepo, IUserRepository userRepository) {
+        public QuoteModule(IQouteRepository quoteRepo, IUserRepository userRepository, IScoreRepsitory scoreRepo) {
             _qouteRepo = quoteRepo;
             _userRepo = userRepository;
+            _scoreRepo = scoreRepo;
         } 
         #endregion
 
@@ -62,12 +64,7 @@ namespace Exurb1aBot.Modules {
 
         #region Add
         [Command("add")]
-        public async Task AddQuote([Remainder] string s) {
-            await AddQuote();
-        }
-
-        [Command("add")]
-        public async Task AddQuote() {
+        public async Task AddQuote([Remainder] string s="") {
             await EmbedBuilderFunctions.GiveErrorSyntax("quote add",
                 new string[] { "**quote**(required must be between \"\") ", "**user**(required must be @mention)" },
                 new string[] { $"{Program.prefix}quote add \"Why is the milk gone\" @exurb1a" }, Context);
@@ -77,12 +74,28 @@ namespace Exurb1aBot.Modules {
         public async Task AddQuote(string quote, IGuildUser user) {
             IGuildUser cr = Context.Message.Author as IGuildUser;
 
-            EntityUser creator = new EntityUser(Context.Message.Author as IGuildUser);
-            EntityUser quotee = new EntityUser(user);
+            EntityUser creator = _userRepo.GetUserById(cr.Id);
+
+            if (creator == null) {
+                creator = new EntityUser(cr);
+                _userRepo.AddUser(creator);
+            }
+
+            EntityUser quotee = _userRepo.GetUserById(user.Id);
+
+            if (quotee == null) {
+                quotee = new EntityUser(user);
+                _userRepo.AddUser(quotee);
+            }
+
+
             Quote q = new Quote(quote.Replace("`","'"), creator, quotee, DateTime.Now,Context.Guild);
 
             _qouteRepo.AddQuote(q);
             _qouteRepo.SaveChanges();
+
+            _scoreRepo.Increment(cr, ScoreType.Qouter);
+            _scoreRepo.Increment(user, ScoreType.Qouted);
 
             int id = _qouteRepo.GetId(q);
             await Context.Channel.SendMessageAsync($"added quote **{q.QuoteText.RemoveAbuseCharacters()}** from" +
@@ -90,10 +103,22 @@ namespace Exurb1aBot.Modules {
 
         }
 
-        public static async Task BotAddQuote(IQouteRepository _quoteRepo,IMessageChannel channel,string quote,ulong msgId, IGuildUser creator, IGuildUser quotee,DateTime time) {
+        public static async Task BotAddQuote(IQouteRepository _quoteRepo, IScoreRepsitory _scoreRepo,IUserRepository _userRepo ,IMessageChannel channel,string quote,ulong msgId, IGuildUser creator, IGuildUser quotee,DateTime time) {
             if (!_quoteRepo.MessageExists(quote,quotee,time)) {
-                EntityUser cr = new EntityUser(creator);
-                EntityUser quotee2 = new EntityUser(quotee);
+
+                EntityUser cr = _userRepo.GetUserById(creator.Id);
+
+                if (cr == null) {
+                    cr = new EntityUser(creator);
+                    _userRepo.AddUser(cr);
+                }
+
+                EntityUser quotee2 = _userRepo.GetUserById(quotee.Id);
+
+                if (quotee2 == null) {
+                    quotee2 = new EntityUser(quotee);
+                    _userRepo.AddUser(quotee2);
+                }
 
                 Quote q = new Quote(quote, cr, quotee2, time,creator.Guild) {
                     msgId = msgId
@@ -101,6 +126,9 @@ namespace Exurb1aBot.Modules {
 
                 _quoteRepo.AddQuote(q);
                 _quoteRepo.SaveChanges();
+
+                _scoreRepo.Increment(creator, ScoreType.Qouter);
+                _scoreRepo.Increment(quotee, ScoreType.Qouted);
 
                 int id = _quoteRepo.GetId(q);
                 await channel.SendMessageAsync($"added quote **{q.QuoteText.RemoveAbuseCharacters()}**" +
@@ -192,8 +220,12 @@ namespace Exurb1aBot.Modules {
 
                 var users = await GetGuildUsers(q);
                 IGuildUser quotee = users[0];
+                IGuildUser quoter = users[1];
 
                 _qouteRepo.RemoveQuote(id);
+                _scoreRepo.Decrement(quotee, ScoreType.Qouted);
+                _scoreRepo.Decrement(quoter, ScoreType.Qouter);
+
                 _qouteRepo.SaveChanges();
 
                 await Context.Channel.SendMessageAsync($"Quote {q.Id} \"{q.QuoteText.RemoveAbuseCharacters()}\" by {quotee.Nickname??quotee.Username} deleted");
@@ -203,16 +235,11 @@ namespace Exurb1aBot.Modules {
         }
 
         [Command("remove")]
-        public async Task RemoveQuote() {
+        public async Task RemoveQuote([Remainder]string s="") {
             await EmbedBuilderFunctions.GiveErrorSyntax("quote remove",
                 new string[] { "**quoteId**(required) " },
                 new string[] { $"{Program.prefix}quote remove 5 " }, Context);
         }
-
-        [Command("remove")]
-        public async Task RemoveQuote([Remainder]string s) {
-            await RemoveQuote();
-        } 
         #endregion
 
         #region Helping functions
@@ -229,8 +256,9 @@ namespace Exurb1aBot.Modules {
                 throw new UserNotFoundException();
 
             return new EntityUser(gu);
-        } 
+        }
         #endregion
+
 
     }
 }

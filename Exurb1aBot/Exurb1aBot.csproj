@@ -298,10 +298,12 @@
     <Compile Include="Data\Mapper\ScoreMapper.cs" />
     <Compile Include="Data\Repository\LocationRepository.cs" />
     <Compile Include="Data\Repository\QouteRepository.cs" />
+    <Compile Include="Data\Repository\ScoreRepository.cs" />
     <Compile Include="Data\Repository\UserRepository.cs" />
     <Compile Include="Model\Domain\Enums.cs" />
     <Compile Include="Model\Domain\ILocationRepository.cs" />
     <Compile Include="Model\Domain\IQouteRepository.cs" />
+    <Compile Include="Model\Domain\IScoreRepsitory.cs" />
     <Compile Include="Model\Domain\IUserRepository.cs" />
     <Compile Include="Model\Domain\Location.cs" />
     <Compile Include="Model\Domain\Quote.cs" />
@@ -319,7 +321,6 @@
     <Compile Include="Model\Exceptions\QuoteExceptions\UserNotFoundException.cs" />
     <Compile Include="Model\ViewModel\EntityUser.cs" />
     <Compile Include="Model\ViewModel\GithubModels\GithubModel.cs" />
-    <Compile Include="Model\ViewModel\ImageModels\ImageModel.cs" />
     <Compile Include="Model\ViewModel\WeatherModels\WeatherDescriptionModel.cs" />
     <Compile Include="Model\ViewModel\WeatherModels\WeatherMainModel.cs" />
     <Compile Include="Model\ViewModel\WeatherModels\WeatherModel.cs" />
@@ -328,14 +329,14 @@
     <Compile Include="Modules\AdminModule.cs" />
     <Compile Include="Modules\BasicModule.cs" />
     <Compile Include="Modules\QuoteModule.cs" />
-    <Compile Include="Modules\Ranking.cs" />
+    <Compile Include="Modules\RankingModule.cs" />
     <Compile Include="Modules\WeatherModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\ApiHelper.cs" />
     <Compile Include="Util\EmbedBuilders\EmbedBuilderFunctions.cs" />
     <Compile Include="Util\EmbedBuilders\GithubEmbedBuilder.cs" />
-    <Compile Include="Util\EmbedBuilders\ImageEmbedBuilder.cs" />
+    <Compile Include="Util\EmbedBuilders\RankEmbedBuilder.cs" />
     <Compile Include="Util\EmbedBuilders\WeatherEmbedBuilder.cs" />
     <Compile Include="Util\Extensions\ExtensionMethods.cs" />
     <Compile Include="Util\Parsers\GithubParser.cs" />

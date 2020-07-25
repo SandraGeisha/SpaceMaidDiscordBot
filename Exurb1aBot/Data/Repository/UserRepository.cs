@@ -15,12 +15,17 @@ namespace Exurb1aBot.Data.Repository {
             _users = context.Users;
         }
 
+        public void AddUser(EntityUser user) {
+            _users.Add(user);
+            _context.SaveChanges();
+        }
+
         public IEnumerable<EntityUser> GetAllUsers() {
             return _users.ToList();
         }
 
         public EntityUser GetUserById(ulong id) {
-            return _users.FirstOrDefault(u => u.Id == id);
+            return _users.ToList().FirstOrDefault(u => u.Id == id);
         }
 
         public void SaveChanges() {
