@@ -352,7 +352,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <Content Include="Exurb1a.db">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />
   </ItemGroup>
