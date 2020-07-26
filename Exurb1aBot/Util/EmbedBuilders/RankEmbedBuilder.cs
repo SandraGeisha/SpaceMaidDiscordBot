@@ -5,12 +5,28 @@ using Exurb1aBot.Model.ViewModel;
 using Exurb1aBot.Modules;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
-using System.ComponentModel;
-using System.Reflection.Emit;
 using System.Threading.Tasks;
 
 namespace Exurb1aBot.Util.EmbedBuilders {
     public static class RankEmbedBuilder {
+        public async static Task<EmbedBuilder> BuildRank(ICommandContext context, RankingModel ranking , IGuildUser user) {
+            EmbedFooterBuilder footer = await EmbedBuilderFunctions.AddFooter(context);
+
+            EmbedBuilder builder = new EmbedBuilder() {
+                Color = Color.Gold,
+                Title = $"Rank for {user.Nickname ?? user.Username}",
+                ThumbnailUrl = user.GetAvatarUrl(),
+                Description = $"So you want to know your standing huh? Well here it is.",
+                Footer = footer
+            };
+
+            builder.AddField("Qouted Ranking", $"#{ranking.QuoteRank}", true);
+            builder.AddField("Quotes Created Ranking", $"#{ranking.CreatedRank}", true);
+            builder.AddField("Voice Ranking", $"#{ranking.VCRank}", false);
+
+            return builder;
+        }
+
         public async static Task<EmbedBuilder> BuildRankEmbed(ICommandContext context,Scores[] scores, EntityUser[] users, int page, Enums.ScoreType type) {
             string title = $"Exurb1a Ranking: Times Quoted- page {page+1}";
             string status = "Quotes";

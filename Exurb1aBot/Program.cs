@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using System.IO;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.Extensions.Options;
+using Exurb1aBot.Util.Workers;
 
 [assembly: UserSecretsId("Exurb1aBotSecrets")]
 namespace Exurb1aBot {
@@ -24,6 +25,7 @@ namespace Exurb1aBot {
         private IServiceProvider _services;
         private CommandService _commands;
         private ApplicationDbContext _context;
+        private  VCWorkerService _workerService;
         public static string prefix = "-";
 
         static void Main(string[] args) {
@@ -37,6 +39,9 @@ namespace Exurb1aBot {
             DatabaseConnection();
             DependencyInjection();
 
+            IScoreRepsitory scoreRepo = _services.GetService<IScoreRepsitory>();
+            _workerService = new VCWorkerService(scoreRepo);
+
             Console.WriteLine("Initializing API");
             ApiHelper.InitializeClient();
 
@@ -45,7 +50,9 @@ namespace Exurb1aBot {
             _client.Log += Log;
             _client.ReactionAdded += ReactionAdded;
 
-           string token = _services.GetService<IOptions<Secrets>>().Value.Token;
+            _client.UserVoiceStateUpdated += UserVCUpdated;
+
+            string token = _services.GetService<IOptions<Secrets>>().Value.Token;
 
             await _client.LoginAsync(TokenType.Bot, token);
             await _client.StartAsync();
@@ -53,8 +60,13 @@ namespace Exurb1aBot {
             // Block this task until the program is closed.
             await Task.Delay(-1);
         }
-   
-        
+
+        private async Task UserVCUpdated(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3) {
+            if (arg3.VoiceChannel != null) {
+                _workerService.AddWorkerToChannel(arg3.VoiceChannel as IVoiceChannel);
+            }
+        }
+
         private async Task ReactionAdded(Cacheable<IUserMessage,ulong> ch,ISocketMessageChannel chanel,SocketReaction reaction) {
             IUserMessage msg = await ch.GetOrDownloadAsync();  
             if (reaction.Emote.Name == "💬" && !msg.Author.IsBot) {

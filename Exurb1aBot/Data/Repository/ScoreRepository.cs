@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Exurb1aBot.Model.Domain;
+using Exurb1aBot.Model.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,14 @@ namespace Exurb1aBot.Data.Repository {
         #region Private readonly fields
         private readonly ApplicationDbContext _context;
         private readonly DbSet<Scores> _scoreDbSet;
+        private readonly IUserRepository _userRepo;
         #endregion
 
         #region Constructor
-        public ScoreRepository(ApplicationDbContext context) {
+        public ScoreRepository(ApplicationDbContext context,IUserRepository userRepository) {
             _context = context;
             _scoreDbSet = context.Scores;
+            _userRepo = userRepository;
         }
         #endregion
 
@@ -56,6 +59,13 @@ namespace Exurb1aBot.Data.Repository {
 
         public void Increment(IUser user, Enums.ScoreType type, int val = 1) {
             bool hasScore = HasScore(user);
+
+            EntityUser eu = _userRepo.GetUserById(user.Id);
+
+            if (eu == null) {
+                eu = new EntityUser(user as IGuildUser);
+                _userRepo.AddUser(eu);
+            }
 
             Scores score = hasScore ? GetScoreByUser(user) : new Scores() {
                 Id = user.Id,

@@ -36,6 +36,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugSet|AnyCPU'">
+    <OutputPath>bin\DebugSet\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Discord.Net.Commands, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Discord.Net.Commands.2.2.0\lib\net461\Discord.Net.Commands.dll</HintPath>
@@ -321,6 +324,7 @@
     <Compile Include="Model\Exceptions\QuoteExceptions\UserNotFoundException.cs" />
     <Compile Include="Model\ViewModel\EntityUser.cs" />
     <Compile Include="Model\ViewModel\GithubModels\GithubModel.cs" />
+    <Compile Include="Model\ViewModel\RankingModel.cs" />
     <Compile Include="Model\ViewModel\WeatherModels\WeatherDescriptionModel.cs" />
     <Compile Include="Model\ViewModel\WeatherModels\WeatherMainModel.cs" />
     <Compile Include="Model\ViewModel\WeatherModels\WeatherModel.cs" />
@@ -342,6 +346,8 @@
     <Compile Include="Util\Parsers\GithubParser.cs" />
     <Compile Include="Util\Parsers\WeatherProcessor.cs" />
     <Compile Include="Util\Permissions\RequireSandra.cs" />
+    <Compile Include="Util\Workers\VCWorker.cs" />
+    <Compile Include="Util\Workers\VCWorkerService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

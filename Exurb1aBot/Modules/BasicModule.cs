@@ -7,6 +7,7 @@ using Exurb1aBot.Util.Parsers;
 using Exurb1aBot.Model.ViewModel.GithubModels;
 using System;
 using Exurb1aBot.Model.Domain;
+using Exurb1aBot.Model.ViewModel;
 
 namespace Exurb1aBot.Modules {
     [Name("General Commands")]
@@ -14,6 +15,7 @@ namespace Exurb1aBot.Modules {
         #region Fields
         //necessary for the View All Commands
         private readonly CommandService _cc;
+        private readonly IScoreRepsitory _scoreRepo;
         private readonly string[] Insults = new string[]{
             "I do not consider {{name}} a vulture. I consider {{name}} something a vulture would eat.",
             "People clap when they see {{name}}. They clap their hands over their eyes.",
@@ -44,8 +46,9 @@ namespace Exurb1aBot.Modules {
         #endregion
 
         #region Constructor
-        public BasicModule(CommandService cc) {
+        public BasicModule(CommandService cc, IScoreRepsitory scoreRepo) {
             _cc = cc;
+            _scoreRepo = scoreRepo;
         }
         #endregion
 
@@ -62,6 +65,20 @@ namespace Exurb1aBot.Modules {
         }
 
         #endregion
+
+        [Command("rank")]
+        public async Task Rank([Remainder] string s = "") {
+            IGuildUser user = Context.Message.Author as IGuildUser;
+
+            RankingModel rm = new RankingModel() {
+                CreatedRank = _scoreRepo.GiveRankUser(user, Enums.ScoreType.Qouter),
+                QuoteRank = _scoreRepo.GiveRankUser(user, Enums.ScoreType.Qouted),
+                VCRank = _scoreRepo.GiveRankUser(user, Enums.ScoreType.VC)
+            };
+
+            EmbedBuilder emb = await RankEmbedBuilder.BuildRank(Context, rm, user);
+            await Context.Message.Channel.SendMessageAsync(embed: emb.Build());
+        }
 
         #region View all commands
         [Command("commands")]

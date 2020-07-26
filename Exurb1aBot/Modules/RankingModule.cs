@@ -54,6 +54,22 @@ namespace Exurb1aBot.Modules {
             await GiveTopCreatedQoutes(0, s);
         }
 
+        [Command("vc")]
+        public async Task GiveTopVCRank([Remainder] string s = "") {
+            await GiveTopVCRank(0, s);
+        }
+        
+        [Command("vc")]
+        public async Task GiveTopVCRank(int page = 0, [Remainder] string s = "") {
+            page = SanitizePage(page);
+
+            Scores[] scores = _scoreRepo.GiveTopNScores(page * _pageAmount, (page + 1) * _pageAmount, Enums.ScoreType.VC);
+            List<EntityUser> users = GetUsers(scores);
+
+            EmbedBuilder emb = await RankEmbedBuilder.BuildRankEmbed(Context, scores, users.ToArray(), page, Enums.ScoreType.VC);
+            await Context.Channel.SendMessageAsync(embed: emb.Build());
+        }
+
         [Command("created")]
         public async Task GiveTopCreatedQoutes(int page = 0, [Remainder] string s = "") {
             page = SanitizePage(page);
