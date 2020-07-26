@@ -4,8 +4,6 @@ C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\bin\Release\runtim
 C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\bin\Release\x86\e_sqlite3.dll
 C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\bin\Release\x64\e_sqlite3.dll
 C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\bin\Release\Exurb1a.db
-C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\bin\Release\Exurb1aBot.exe.config
-C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\bin\Release\Exurb1aBot.exe
 C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\bin\Release\Exurb1aBot.pdb
 C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\bin\Release\Microsoft.Win32.Primitives.dll
 C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\bin\Release\netstandard.dll
@@ -217,9 +215,10 @@ C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\bin\Release\System
 C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\bin\Release\System.ValueTuple.xml
 C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\bin\Release\System.Web.Http.xml
 C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\bin\Release\System.Web.Http.WebHost.xml
-C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\obj\Release\Exurb1aBot.exe.config
 C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\obj\Release\Exurb1aBot.csproj.CoreCompileInputs.cache
 C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\obj\Release\Exurb1aBot.csproj.CopyComplete
-C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\obj\Release\Exurb1aBot.exe
 C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\obj\Release\Exurb1aBot.pdb
 C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\obj\Release\Exurb1aBot.csprojAssemblyReference.cache
+C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\bin\Release\Exurb1aBot.dll.config
+C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\bin\Release\Exurb1aBot.dll
+C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBot\obj\Release\Exurb1aBot.dll
