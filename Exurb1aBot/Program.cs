@@ -52,9 +52,7 @@ namespace Exurb1aBot {
 
             _client.UserVoiceStateUpdated += UserVCUpdated;
 
-            string token = _services.GetService<IOptions<Secrets>>().Value.Token;
-
-            await _client.LoginAsync(TokenType.Bot, token);
+            await _client.LoginAsync(TokenType.Bot, "NzQzODcyNjU2OTAxNzk5OTg4.Xza_ZQ.rqeEW5lQ-k3DtLRmIfSDvUO0J1o");
             await _client.StartAsync();
 
             // Block this task until the program is closed.
@@ -94,7 +92,6 @@ namespace Exurb1aBot {
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddEnvironmentVariables();
 
-            builder.AddUserSecrets<Secrets>();
             IConfigurationRoot configuration = builder.Build();
 
 
@@ -105,7 +102,6 @@ namespace Exurb1aBot {
                 .AddScoped<IUserRepository,UserRepository>()
                 .AddScoped<IScoreRepsitory,ScoreRepository>()
                 .AddScoped<ILocationRepository,LocationRepository>()
-                .Configure<Secrets>(configuration.GetSection("Secrets"))
                 .AddOptions()
                 .BuildServiceProvider();
         }
