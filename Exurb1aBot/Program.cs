@@ -25,7 +25,7 @@ namespace Exurb1aBot {
         private IServiceProvider _services;
         private CommandService _commands;
         private ApplicationDbContext _context;
-        private  VCWorkerService _workerService;
+        private VCWorkerService _workerService;
         public static string prefix = "-";
 
         static void Main(string[] args) {
@@ -52,7 +52,7 @@ namespace Exurb1aBot {
 
             _client.UserVoiceStateUpdated += UserVCUpdated;
 
-            await _client.LoginAsync(TokenType.Bot, "NzQzODcyNjU2OTAxNzk5OTg4.Xza_ZQ.rqeEW5lQ-k3DtLRmIfSDvUO0J1o");
+            await _client.LoginAsync(TokenType.Bot, "NzQzODcyNjU2OTAxNzk5OTg4.Xza_ZQ.FgdXp21sbDImJxrQMxj0PCt_oLI");
             await _client.StartAsync();
 
             // Block this task until the program is closed.
@@ -61,7 +61,7 @@ namespace Exurb1aBot {
 
         private async Task UserVCUpdated(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3) {
             if (arg3.VoiceChannel != null) {
-                _workerService.AddWorkerToChannel(arg3.VoiceChannel as IVoiceChannel);
+                await _workerService.AddWorkerToChannel(arg3.VoiceChannel);
             }
         }
 
@@ -91,7 +91,7 @@ namespace Exurb1aBot {
             IConfigurationBuilder builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddEnvironmentVariables();
-
+            builder.AddUserSecrets<Secrets>();
             IConfigurationRoot configuration = builder.Build();
 
 

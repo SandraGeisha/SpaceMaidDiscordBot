@@ -6,6 +6,7 @@ using Discord;
 using Exurb1aBot.Util.Parsers;
 using Exurb1aBot.Model.ViewModel.GithubModels;
 using System;
+using System.Linq;
 using Exurb1aBot.Model.Domain;
 using Exurb1aBot.Model.ViewModel;
 
@@ -42,6 +43,11 @@ namespace Exurb1aBot.Modules {
             "If {{name}} really spoke their mind, {{name}} would be speechless.",
             "As an outsider, what does {{name}} think of the human race?",
             "So, a thought crossed {{name}} mind? Must have been a long and lonely journey."
+        };
+        private readonly string[] Colours = new string[] {
+            "red", "orange", "yellow",
+            "green", "blue", "purple",
+            "brown", "white", "black"
         };
         #endregion
 
@@ -137,6 +143,30 @@ namespace Exurb1aBot.Modules {
 
         #endregion
 
+        #region Custom Colours
+
+        [Command("setcolour")]
+        public async Task SetColour(string arg) {
+            Discord.WebSocket.SocketRole ColourRole;
+            if (!Colours.Contains(arg.ToLower())) {
+                await Context.Message.DeleteAsync();
+                var Res = await Context.Channel.SendMessageAsync((Context.User as IGuildUser).Mention + ", that role does not exist or is not a colour role.");
+            }
+            else {
+                foreach (string Colour in Colours) {
+                    ColourRole = Context.Guild.Roles.FirstOrDefault(x => x.Name.ToLower() == Colour.ToLower());
+                    if ((Context.User as Discord.WebSocket.SocketGuildUser).Roles.Contains(ColourRole)) 
+                    await (Context.User as IGuildUser).RemoveRoleAsync(ColourRole);
+                }
+                var Role = Context.Guild.Roles.FirstOrDefault(x => x.Name.ToLower().Equals(arg.ToLower()));
+                await (Context.User as IGuildUser).AddRoleAsync(Role);
+                await Context.Message.DeleteAsync();
+                var Resp = await Context.Channel.SendMessageAsync((Context.User as IGuildUser).Mention + ", enjoy your fancy new colour!");
+            }
+        }
+
+        #endregion
+
         #region private commands
         private int GetMS() {
             DateTime time_message = Context.Message.Timestamp.DateTime;
@@ -145,7 +175,7 @@ namespace Exurb1aBot.Modules {
 
         private bool EasterInsultEggs(IGuildUser user) {
             if (user.Id == Enums.SandraID) {
-                Context.Channel.SendMessageAsync("Why would I insult my owner? he's enough of a joke as is.");
+                Context.Channel.SendMessageAsync("Why would I insult my owner? He's enough of a joke as it is.");
                 return true;
             }
 
