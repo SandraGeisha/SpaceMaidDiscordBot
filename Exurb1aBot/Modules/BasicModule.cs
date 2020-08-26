@@ -6,6 +6,7 @@ using Discord;
 using Exurb1aBot.Util.Parsers;
 using Exurb1aBot.Model.ViewModel.GithubModels;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Exurb1aBot.Model.Domain;
 using Exurb1aBot.Model.ViewModel;
@@ -20,41 +21,44 @@ namespace Exurb1aBot.Modules {
         private readonly string[] Insults = new string[]{
             "I do not consider {{name}} a vulture. I consider {{name}} something a vulture would eat.",
             "People clap when they see {{name}}. They clap their hands over their eyes.",
-            "{{name}}'s face is proof that god has a sense of humour.",
-            "In the lands of the witless, {{name}} would be king.",
+            "{{name}}'s face is proof that God has a sense of humour.",
+            "In the Lands of the Witless, {{name}} would be King.",
             "I'd prefer a battle of wits, but {{name}} seems to be unarmed.",
             "I regard {{name}} with an indifference bordering on aversion.",
-            "{{name}} is the reason god made the middlefinger.",
-            "Sometimes I need what only {{name}} can provide, Their absence.",
+            "{{name}} is the reason God made the middle finger.",
+            "Sometimes I need what only {{name}} can provide, their absence.",
             "{{name}}'s inferiority complex is fully justified.",
             "{{name}} has delusions of adequacy.",
-            "if {{name}} had another brain, it would be lonely",
-            "I'm not surprised {{name}} doesn't have children,{{name}} is a dead end of evolution",
+            "If {{name}} had another brain, it would be lonely",
+            "I'm not surprised {{name}} doesn't have children, {{name}} is a dead end of evolution",
             "Senpai will never notice {{name}}",
-            "{{name}} is getting old and will accomplished nothing.",
-            "They stopped lobotimizing people for mental illnesses but when they'd examine {{name}} they might reconsider",
+            "{{name}} is getting old and will have accomplished nothing.",
+            "They stopped lobotimizing people for mental illnesses but when they examine {{name}} they might reconsider",
             "No I'm not insulting {{name}}, I'm describing {{name}}. Facts don't care about their feelings.",
             "If I wanted to kill myself I'd climb {{name}} their ego and jump to their IQ.",
-            "Brains aren't everything. In {{name}}s case they're nothing.",
+            "Brains aren't everything. In {{name}}'s case they're nothing.",
             "{{name}} is an oxygen thief!",
-            "The last time I saw something like {{name}} , I flushed it.",
+            "The last time I saw something like {{name}}, I flushed it.",
             "I am busy now. Can I ignore you some other time?",
             "{{name}} is the reason the gene pool needs a lifeguard.",
             "If {{name}} really spoke their mind, {{name}} would be speechless.",
             "As an outsider, what does {{name}} think of the human race?",
-            "So, a thought crossed {{name}} mind? Must have been a long and lonely journey."
+            "So, a thought crossed {{name}}'s mind? Must have been a long and lonely journey."
         };
-        private readonly string[] Colours = new string[] {
-            "red", "orange", "yellow",
-            "green", "blue", "purple",
-            "brown", "white", "black"
-        };
+        private List<string[]> AssignableRoles = new List<string[]>();
+
         #endregion
 
         #region Constructor
         public BasicModule(CommandService cc, IScoreRepsitory scoreRepo) {
             _cc = cc;
             _scoreRepo = scoreRepo;
+            AssignableRoles.Add(new string[] { // colours
+                "red", "orange", "yellow", "green", "blue", "purple", "brown", "white", "black"
+            });
+            AssignableRoles.Add(new string[] { "man", "woman", "enby" }); // genders
+            AssignableRoles.Add(new string[] { "guitar player", "classic music", "metal music", // interests
+                "rap music", "tabletop nerd", "chess player" });
         }
         #endregion
 
@@ -88,7 +92,7 @@ namespace Exurb1aBot.Modules {
 
         #region View all commands
         [Command("commands")]
-        [Alias("c")]
+        [Alias("c", "help")]
         public async Task Commands([Remainder] string s = "") {
             await EmbedBuilderFunctions.GiveAllCommands(_cc, Context);
         }
@@ -120,22 +124,38 @@ namespace Exurb1aBot.Modules {
         }
         #endregion
 
-        #region Quick poll
+        #region Polls
 
         [Command("qp")]
+        [Alias("poll")]
         [RequireBotPermission(ChannelPermission.AddReactions)]
-        public async Task QuickPoll([Remainder]string question) {
-            var res = await Context.Channel.SendMessageAsync(question);
-            IEmote check = new Emoji("✅");
-            IEmote cross = new Emoji("❌");
-            await res.AddReactionsAsync(new IEmote[] { check, cross });
-            var bot = await Context.Channel.GetUserAsync(Context.Client.CurrentUser.Id) as IGuildUser;
-            var permissions = bot.GetPermissions(Context.Guild.GetChannel(Context.Message.Channel.Id));
-            if (permissions.ManageMessages)
-                await Context.Message.DeleteAsync();
+        //public async Task QuickPoll([Remainder]string question) {
+        //    var res = await Context.Channel.SendMessageAsync(question);
+        //    IEmote check = new Emoji("✅");
+        //    IEmote cross = new Emoji("❌");
+        //    await res.AddReactionsAsync(new IEmote[] { check, cross });
+        //    var bot = await Context.Channel.GetUserAsync(Context.Client.CurrentUser.Id) as IGuildUser;
+        //    var permissions = bot.GetPermissions(Context.Guild.GetChannel(Context.Message.Channel.Id));
+        //    if (permissions.ManageMessages)
+        //        await Context.Message.DeleteAsync();
+        //}
+        public async Task QuickPoll([Remainder]string Question) {
+            await Context.Message.DeleteAsync();
+            var Embed = new EmbedBuilder {
+                Title = "Quick Poll",
+                Description = Question
+            }
+            .WithTimestamp(DateTime.Now);
+            var Res = await Context.Channel.SendMessageAsync(embed: Embed.Build());
+            IEmote Check = new Emoji("✅");
+            IEmote Cross = new Emoji("❌");
+            IEmote Line = new Emoji("➖");
+            IEmote _Question = new Emoji("❔");
+            await Res.AddReactionsAsync(new IEmote[] { Check, Cross, Line, _Question }); 
         }
 
         [Command("qp")]
+        [Alias("poll")]
         public async Task QuickPoll() {
             await EmbedBuilderFunctions.GiveErrorSyntax("qp", new string[] { "**name**(required)" },
                 new string[] { $"{Program.prefix}qp Is the milk gone?" }, Context);
@@ -143,25 +163,27 @@ namespace Exurb1aBot.Modules {
 
         #endregion
 
-        #region Custom Colours
+        #region Custom Roles
 
-        [Command("setcolour")]
-        public async Task SetColour(string arg) {
-            Discord.WebSocket.SocketRole ColourRole;
-            if (!Colours.Contains(arg.ToLower())) {
+        [Command("addrole")]
+        public async Task AddRole(string arg) {
+            Discord.WebSocket.SocketRole CheckedRole;
+            sbyte RoleType = -1;
+            for (sbyte i = 0; i < AssignableRoles.Count; i++) RoleType += Convert.ToSByte(AssignableRoles[i].Contains(arg.ToLower()) ? i+1 : 0);
+            if (RoleType == -1) {
                 await Context.Message.DeleteAsync();
-                var Res = await Context.Channel.SendMessageAsync((Context.User as IGuildUser).Mention + ", that role does not exist or is not a colour role.");
+                await Context.Channel.SendMessageAsync((Context.User as IGuildUser).Mention + " that role either does not exist or is not eligible.");
             }
             else {
-                foreach (string Colour in Colours) {
-                    ColourRole = Context.Guild.Roles.FirstOrDefault(x => x.Name.ToLower() == Colour.ToLower());
-                    if ((Context.User as Discord.WebSocket.SocketGuildUser).Roles.Contains(ColourRole)) 
-                    await (Context.User as IGuildUser).RemoveRoleAsync(ColourRole);
+                foreach (string CheckingRole in AssignableRoles[RoleType]) {
+                    CheckedRole = Context.Guild.Roles.FirstOrDefault(x => x.Name.ToLower() == CheckingRole.ToLower());
+                    if ((Context.User as Discord.WebSocket.SocketGuildUser).Roles.Contains(CheckedRole))
+                    await (Context.User as IGuildUser).RemoveRoleAsync(CheckedRole);
                 }
                 var Role = Context.Guild.Roles.FirstOrDefault(x => x.Name.ToLower().Equals(arg.ToLower()));
                 await (Context.User as IGuildUser).AddRoleAsync(Role);
                 await Context.Message.DeleteAsync();
-                var Resp = await Context.Channel.SendMessageAsync((Context.User as IGuildUser).Mention + ", enjoy your fancy new colour!");
+                await Context.Channel.SendMessageAsync((Context.User as IGuildUser).Mention + ", enjoy your fancy new role!");
             }
         }
 

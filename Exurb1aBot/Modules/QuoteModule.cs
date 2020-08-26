@@ -47,7 +47,7 @@ namespace Exurb1aBot.Modules {
         #region help
         [Command("help")]
         public async Task DisplayHelp() {
-            EmbedBuilder eb = await EmbedBuilderFunctions.MakeHelp("Quote command help", 
+            EmbedBuilder eb = await EmbedBuilderFunctions.MakeHelp("Quote Command Help", 
                 "A command made for the purposes of quoting",
                "https://static.thenounproject.com/png/81720-200.png", "quote", new string[] { "help", "get",
                    "random", "user", "remove" }, new string[] { "quote help", "quote add \"I wanna be called margret\" @27#2727"
