@@ -52,7 +52,7 @@ namespace Exurb1aBot {
 
             _client.UserVoiceStateUpdated += UserVCUpdated;
 
-            await _client.LoginAsync(TokenType.Bot, "NzQzODcyNjU2OTAxNzk5OTg4.Xza_ZQ.MjHmCcKkVNf751PY-M0hylUEc6E");
+            await _client.LoginAsync(TokenType.Bot, "NzQzODcyNjU2OTAxNzk5OTg4.Xza_ZQ.rBNGTLD7Z0HtAytsghcC7W8hNDI");
             await _client.StartAsync();
 
             // Block this task until the program is closed.
