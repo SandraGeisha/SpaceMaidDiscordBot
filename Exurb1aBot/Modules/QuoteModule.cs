@@ -11,7 +11,7 @@ using static Exurb1aBot.Model.Domain.Enums;
 
 namespace Exurb1aBot.Modules {
     [Name("Quoting Commands")]
-    [Group("quote"),Summary("The quote command, accepted methods add,get,delete,user,help")]
+    [Group("quote"),Summary("The quote command, accepted methods add,get,delete,user,help"), Alias("q")]
     public class QuoteModule:ModuleBase{
         #region Fields
         private readonly IUserRepository _userRepo;
