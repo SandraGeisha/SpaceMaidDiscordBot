@@ -205,6 +205,12 @@ namespace Exurb1aBot.Modules {
                 await Context.Message.DeleteAsync();
                 await Context.Channel.SendMessageAsync((Context.User as IGuildUser).Mention + " that role either does not exist or is not eligible.");
             }
+            else if (RoleType == 2) {
+                var Role = Context.Guild.Roles.FirstOrDefault(x => x.Name.ToLower().Equals(msg.ToLower()));
+                await (Context.User as IGuildUser).AddRoleAsync(Role);
+                await Context.Message.DeleteAsync();
+                await Context.Channel.SendMessageAsync((Context.User as IGuildUser).Mention + ", enjoy your fancy new role!");
+            }
             else {
                 foreach (string CheckingRole in AssignableRoles[RoleType]) {
                     CheckedRole = Context.Guild.Roles.FirstOrDefault(x => x.Name.ToLower() == CheckingRole.ToLower());
@@ -216,6 +222,14 @@ namespace Exurb1aBot.Modules {
                 await Context.Message.DeleteAsync();
                 await Context.Channel.SendMessageAsync((Context.User as IGuildUser).Mention + ", enjoy your fancy new role!");
             }
+        }
+
+        [Command("removerole")]
+        public async Task RemoveRole([Remainder] string msg) {
+            var Role = Context.Guild.Roles.FirstOrDefault(x => x.Name.ToLower().Equals(msg.ToLower()));
+            await (Context.User as IGuildUser).RemoveRoleAsync(Role);
+            await Context.Message.DeleteAsync();
+            await Context.Channel.SendMessageAsync((Context.User as IGuildUser).Mention + ", your role has been removed.");
         }
 
         #endregion
