@@ -18,8 +18,9 @@ namespace Exurb1aBot.Util.EmbedBuilders {
 
             if (ErrorReason == null) {
                 ebm.WithTitle("Command list");
-                ebm.WithColor(Color.Teal);
-            }else {
+                ebm.WithColor(Color.Green);
+            }
+            else {
                 ebm.WithTitle(ErrorReason);
                 ebm.WithColor(Color.Red);
             }
@@ -39,7 +40,7 @@ namespace Exurb1aBot.Util.EmbedBuilders {
             string url,string commandName,string[] parameters, string[] Examples,ICommandContext context) {
             EmbedBuilder eb = new EmbedBuilder();
 
-            eb.WithColor(Color.Teal);
+            eb.WithColor(Color.Green);
             eb.WithTitle(title);
 
             eb.WithDescription(description);
@@ -80,7 +81,7 @@ namespace Exurb1aBot.Util.EmbedBuilders {
 
         public async static Task DisplayQuote(Quote q, IGuildUser[] users, ICommandContext context) {
             EmbedBuilder ebm = new EmbedBuilder() {
-                Color = Color.Blue
+                Color = Color.Green
             };
 
             IGuildUser quotee = users[0];
@@ -107,7 +108,17 @@ namespace Exurb1aBot.Util.EmbedBuilders {
             await context.Channel.SendMessageAsync(embed: ebm.Build());
         }
 
-
+        public  static EmbedBuilder MakeEmbedPoll(string question, ICommandContext context) {
+            return new EmbedBuilder{
+                Title = "Quick Poll",
+                Description = question,
+                Color = Color.Green,
+                Timestamp = DateTime.Now
+            }.WithFooter(Footer => { 
+                Footer.Text = "Poll by " + context.User.Username;
+                Footer.IconUrl = context.User.GetAvatarUrl() ?? context.User.GetDefaultAvatarUrl();
+            });
+        }
         
         public async static Task UnhandledException(string ex,ISocketMessageChannel channel) {
             EmbedBuilder builder = new EmbedBuilder {

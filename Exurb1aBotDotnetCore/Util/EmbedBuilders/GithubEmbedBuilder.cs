@@ -9,7 +9,7 @@ namespace Exurb1aBot.Util.EmbedBuilders {
 
         public static async Task<EmbedBuilder> MakeGithubEmbed(GithubModel model, ICommandContext context) {
             EmbedBuilder emb = new EmbedBuilder() {
-                Color = Color.Teal,
+                Color = Color.Green,
                 Title = model.ProjectName,
                 Url = "https://github.com/SandraGeisha/Exurb1aBot",
                 ThumbnailUrl = "https://i.imgur.com/ASk5DlY.png"

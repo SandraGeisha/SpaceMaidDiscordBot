@@ -9,7 +9,7 @@ namespace Exurb1aBot.Util.EmbedBuilders {
 
         public static async Task DisplayWeather(WeatherModel wm,SocketCommandContext context) {
             EmbedBuilder eb = new EmbedBuilder {
-                Color = Color.Teal
+                Color = Color.Green
             };
 
             eb.WithTitle($"Weather for {wm.Name},{wm.Sys.Country}");

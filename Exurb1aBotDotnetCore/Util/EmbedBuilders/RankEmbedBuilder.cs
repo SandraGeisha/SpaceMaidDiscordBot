@@ -13,7 +13,7 @@ namespace Exurb1aBot.Util.EmbedBuilders {
             EmbedFooterBuilder footer = await EmbedBuilderFunctions.AddFooter(context);
 
             EmbedBuilder builder = new EmbedBuilder() {
-                Color = Color.Gold,
+                Color = Color.Green,
                 Title = $"Rank for {user.Nickname ?? user.Username}",
                 ThumbnailUrl = user.GetAvatarUrl(),
                 Description = $"So you want to know your standing huh? Well here it is.",
@@ -45,7 +45,7 @@ namespace Exurb1aBot.Util.EmbedBuilders {
 
             EmbedBuilder emb = new EmbedBuilder() { 
                 Title = title,
-                Color = Color.Gold
+                Color = Color.Green
             };
 
             foreach (Scores score in scores) {
