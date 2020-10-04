@@ -1,15 +1,14 @@
-﻿using Discord.Commands;
-using System.Threading.Tasks;
-using Exurb1aBot.Util.EmbedBuilders;
-using Exurb1aBot.Model.ViewModel.WeatherModels;
-using Discord;
-using Exurb1aBot.Util.Parsers;
+﻿using Discord;
+using Discord.Commands;
+using Exurb1aBot.Model.Domain;
+using Exurb1aBot.Model.ViewModel;
 using Exurb1aBot.Model.ViewModel.GithubModels;
+using Exurb1aBot.Util.EmbedBuilders;
+using Exurb1aBot.Util.Parsers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Exurb1aBot.Model.Domain;
-using Exurb1aBot.Model.ViewModel;
+using System.Threading.Tasks;
 
 namespace Exurb1aBot.Modules {
     [Name("General Commands")]
@@ -29,13 +28,13 @@ namespace Exurb1aBot.Modules {
             "Sometimes I need what only {{name}} can provide, their absence.",
             "{{name}}'s inferiority complex is fully justified.",
             "{{name}} has delusions of adequacy.",
-            "If {{name}} had another brain, it would be lonely",
-            "I'm not surprised {{name}} doesn't have children, {{name}} is a dead end of evolution",
-            "Senpai will never notice {{name}}",
-            "{{name}} is getting old and will have accomplished nothing.",
-            "They stopped lobotimizing people for mental illnesses but when they examine {{name}} they might reconsider",
+            "If {{name}} had another brain, it would be lonely.",
+            "I'm not surprised {{name}} doesn't have children, {{name}} is a dead end of evolution.",
+            "Senpai will never notice {{name}}.",
+            "{{name}} is getting old and will never accomplish anything.",
+            "They stopped lobotimizing people for mental illnesses but when they examine {{name}} they might reconsider.",
             "No I'm not insulting {{name}}, I'm describing {{name}}. Facts don't care about their feelings.",
-            "If I wanted to kill myself I'd climb {{name}} their ego and jump to their IQ.",
+            "If I wanted to kill myself I'd climb {{name}}'s ego and jump to their IQ.",
             "Brains aren't everything. In {{name}}'s case they're nothing.",
             "{{name}} is an oxygen thief!",
             "The last time I saw something like {{name}}, I flushed it.",
@@ -100,7 +99,7 @@ namespace Exurb1aBot.Modules {
 
         #region Source
         [Command("source")]
-        public async Task ShowGithubSource([Remainder]string s="") {
+        public async Task ShowGithubSource([Remainder] string s = "") {
             GithubModel gm = GithubParser.GetModel();
             EmbedBuilder ebm = await GithubEmbedBuilder.MakeGithubEmbed(gm, Context);
             await Context.Channel.SendMessageAsync(embed: ebm.Build());
@@ -109,7 +108,7 @@ namespace Exurb1aBot.Modules {
 
         #region Insult
         [Command("insult")]
-        public async Task Insult([Remainder] string s="") {
+        public async Task Insult([Remainder] string s = "") {
             await EmbedBuilderFunctions.GiveErrorSyntax("Insult", new string[] { "**name**(@ mention,required)" },
                 new string[] { $"{Program.prefix}Insult @Exurb1aBot#0069" }, Context);
         }
@@ -129,7 +128,7 @@ namespace Exurb1aBot.Modules {
         [Command("qp")]
         [Alias("poll")]
         [RequireBotPermission(ChannelPermission.AddReactions)]
-        public async Task QuickPoll([Remainder]string Question) {
+        public async Task QuickPoll([Remainder] string Question) {
             await Context.Message.DeleteAsync();
             var Embed = new EmbedBuilder {
                 Title = "Quick Poll",
@@ -143,7 +142,7 @@ namespace Exurb1aBot.Modules {
             IEmote Cross = new Emoji("❌");
             IEmote Line = new Emoji("➖");
             IEmote _Question = new Emoji("❔");
-            await Res.AddReactionsAsync(new IEmote[] { Check, Cross, Line, _Question }); 
+            await Res.AddReactionsAsync(new IEmote[] { Check, Cross, Line, _Question });
         }
 
         [Command("qp")]
@@ -160,11 +159,11 @@ namespace Exurb1aBot.Modules {
             byte ArgCount = 1;
             await Context.Message.DeleteAsync();
             string[] _args = new string[] { arg2, arg3, arg4, arg5 };
-            string args = Emotes[ArgCount-1] + " " + arg1;
+            string args = Emotes[ArgCount - 1] + " " + arg1;
             foreach (string _s in _args) {
                 if (_s != "") {
                     ArgCount++;
-                    args += "\n" + "\n" + Emotes[ArgCount-1] + " " + _s;
+                    args += "\n" + "\n" + Emotes[ArgCount - 1] + " " + _s;
                 }
                 else continue;
             }
@@ -200,27 +199,40 @@ namespace Exurb1aBot.Modules {
         public async Task AddRole([Remainder] string msg) {
             Discord.WebSocket.SocketRole CheckedRole;
             sbyte RoleType = -1;
-            for (sbyte i = 0; i < AssignableRoles.Count; i++) RoleType += Convert.ToSByte(AssignableRoles[i].Contains(msg.ToLower()) ? i+1 : 0);
-            if (RoleType == -1) {
-                await Context.Message.DeleteAsync();
-                await Context.Channel.SendMessageAsync((Context.User as IGuildUser).Mention + " that role either does not exist or is not eligible.");
-            }
-            else if (RoleType == 2) {
-                var Role = Context.Guild.Roles.FirstOrDefault(x => x.Name.ToLower().Equals(msg.ToLower()));
-                await (Context.User as IGuildUser).AddRoleAsync(Role);
-                await Context.Message.DeleteAsync();
-                await Context.Channel.SendMessageAsync((Context.User as IGuildUser).Mention + ", enjoy your fancy new role!");
-            }
-            else {
-                foreach (string CheckingRole in AssignableRoles[RoleType]) {
-                    CheckedRole = Context.Guild.Roles.FirstOrDefault(x => x.Name.ToLower() == CheckingRole.ToLower());
-                    if ((Context.User as Discord.WebSocket.SocketGuildUser).Roles.Contains(CheckedRole))
-                    await (Context.User as IGuildUser).RemoveRoleAsync(CheckedRole);
-                }
-                var Role = Context.Guild.Roles.FirstOrDefault(x => x.Name.ToLower().Equals(msg.ToLower()));
-                await (Context.User as IGuildUser).AddRoleAsync(Role);
-                await Context.Message.DeleteAsync();
-                await Context.Channel.SendMessageAsync((Context.User as IGuildUser).Mention + ", enjoy your fancy new role!");
+            for (sbyte i = 0; i < AssignableRoles.Count; i++) RoleType += Convert.ToSByte(AssignableRoles[i].Contains(msg.ToLower()) ? i + 1 : 0);
+            switch (RoleType) {
+                case -1:
+                    await Context.Message.DeleteAsync();
+                    await Context.Channel.SendMessageAsync((Context.User as IGuildUser).Mention + " that role either does not exist or is not eligible.");
+                    break;
+                case 0:
+                    if ((Context.User as Discord.WebSocket.SocketGuildUser).Roles.Any(f => f.Name == "Tier 12")) {
+                        goto default;
+                    }
+                    else {
+                        await Context.Message.DeleteAsync();
+                        await Context.Channel.SendMessageAsync($"{(Context.User as IGuildUser).Mention}, you do not have Tier 12!");
+                    }
+                    break;
+                case 1:
+                    goto default;
+                case 2:
+                    var Role = Context.Guild.Roles.FirstOrDefault(x => x.Name.ToLower().Equals(msg.ToLower()));
+                    await (Context.User as IGuildUser).AddRoleAsync(Role);
+                    await Context.Message.DeleteAsync();
+                    await Context.Channel.SendMessageAsync((Context.User as IGuildUser).Mention + ", enjoy your fancy new role!");
+                    break;
+                default:
+                    foreach (string CheckingRole in AssignableRoles[RoleType]) {
+                        CheckedRole = Context.Guild.Roles.FirstOrDefault(x => x.Name.ToLower() == CheckingRole.ToLower());
+                        if ((Context.User as Discord.WebSocket.SocketGuildUser).Roles.Contains(CheckedRole))
+                            await (Context.User as IGuildUser).RemoveRoleAsync(CheckedRole);
+                    }
+                    var _Role = Context.Guild.Roles.FirstOrDefault(x => x.Name.ToLower().Equals(msg.ToLower()));
+                    await (Context.User as IGuildUser).AddRoleAsync(_Role);
+                    await Context.Message.DeleteAsync();
+                    await Context.Channel.SendMessageAsync((Context.User as IGuildUser).Mention + ", enjoy your fancy new role!");
+                    break;
             }
         }
 
