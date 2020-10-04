@@ -3,6 +3,8 @@ using Exurb1aBot.Model.Domain;
 using Exurb1aBot.Model.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
+using Exurb1aBotDotnetCore.Model.Domain;
+using Exurb1aBotDotnetCore.Data.Mapper;
 
 namespace Exurb1aBot.Data {
     public class ApplicationDbContext : DbContext {
@@ -11,6 +13,7 @@ namespace Exurb1aBot.Data {
         public DbSet<EntityUser> Users { get; set; }
         public DbSet<Location> Location { get; set; }
         public DbSet<Scores> Scores { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
             //optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=Exurb1a;Integrated Security=True");
@@ -26,7 +29,8 @@ namespace Exurb1aBot.Data {
             modelBuilder.ApplyConfiguration<EntityUser>(new EntityUserMapper())
                         .ApplyConfiguration<Quote>(new QuoteMapper())
                         .ApplyConfiguration<Location>(new LocationMapper())
-                        .ApplyConfiguration<Scores>(new ScoreMapper());
+                        .ApplyConfiguration<Scores>(new ScoreMapper())
+                        .ApplyConfiguration<Role>(new RoleMapper());
         }
 
         public void Initialize() {
@@ -34,6 +38,7 @@ namespace Exurb1aBot.Data {
             Users.Load();
             Location.Load();
             Scores.Load();
+            Roles.Load();
         }
     }
 }

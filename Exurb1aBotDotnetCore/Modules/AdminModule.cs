@@ -60,5 +60,9 @@ namespace Exurb1aBot.Modules {
             await Context.Message.Channel.SendMessageAsync("I lack the permissions to change my nickname");
         }
         #endregion
+
+        #region Roles
+        
+        #endregion
     }
 }
