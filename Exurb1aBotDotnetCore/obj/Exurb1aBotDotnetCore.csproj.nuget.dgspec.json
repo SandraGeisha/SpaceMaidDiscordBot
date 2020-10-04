@@ -1,30 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\riasc\\OneDrive\\Bureaublad\\Exurb1aBot\\Exurb1aBotDotnetCore\\Exurb1aBotDotnetCore.csproj": {}
+    "C:\\Users\\gebruiker\\Desktop\\SandraGeisha\\Exurb1aBot\\Exurb1aBotDotnetCore\\Exurb1aBotDotnetCore.csproj": {}
   },
   "projects": {
-    "C:\\Users\\riasc\\OneDrive\\Bureaublad\\Exurb1aBot\\Exurb1aBotDotnetCore\\Exurb1aBotDotnetCore.csproj": {
+    "C:\\Users\\gebruiker\\Desktop\\SandraGeisha\\Exurb1aBot\\Exurb1aBotDotnetCore\\Exurb1aBotDotnetCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\riasc\\OneDrive\\Bureaublad\\Exurb1aBot\\Exurb1aBotDotnetCore\\Exurb1aBotDotnetCore.csproj",
+        "projectUniqueName": "C:\\Users\\gebruiker\\Desktop\\SandraGeisha\\Exurb1aBot\\Exurb1aBotDotnetCore\\Exurb1aBotDotnetCore.csproj",
         "projectName": "Exurb1aBotDotnetCore",
-        "projectPath": "C:\\Users\\riasc\\OneDrive\\Bureaublad\\Exurb1aBot\\Exurb1aBotDotnetCore\\Exurb1aBotDotnetCore.csproj",
-        "packagesPath": "C:\\Users\\riasc\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\riasc\\OneDrive\\Bureaublad\\Exurb1aBot\\Exurb1aBotDotnetCore\\obj\\",
+        "projectPath": "C:\\Users\\gebruiker\\Desktop\\SandraGeisha\\Exurb1aBot\\Exurb1aBotDotnetCore\\Exurb1aBotDotnetCore.csproj",
+        "packagesPath": "C:\\Users\\gebruiker\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\gebruiker\\Desktop\\SandraGeisha\\Exurb1aBot\\Exurb1aBotDotnetCore\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Microsoft\\Xamarin\\NuGet\\"
         ],
         "configFilePaths": [
-          "C:\\Users\\riasc\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\gebruiker\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp2.2"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -98,7 +98,7 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
         }
       }
     }

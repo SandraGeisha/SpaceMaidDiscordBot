@@ -3,8 +3,6 @@ using Exurb1aBot.Model.Domain;
 using Exurb1aBot.Model.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
-using Exurb1aBotDotnetCore.Model.Domain;
-using Exurb1aBotDotnetCore.Data.Mapper;
 
 namespace Exurb1aBot.Data {
     public class ApplicationDbContext : DbContext {

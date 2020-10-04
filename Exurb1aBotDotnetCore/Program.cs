@@ -53,7 +53,7 @@ namespace Exurb1aBot {
 
             //string token = _services.GetService<IOptions<Secrets>>().Value.Token;
 
-            await _client.LoginAsync(TokenType.Bot, "good try");
+            await _client.LoginAsync(TokenType.Bot, "NTQ4MjA0NjM2NzM4Mjg5NjY3.XG7pWg.tBmulo8JTmcDcsMWT99U9hc6U-U");
             await _client.StartAsync();
 
             // Block this task until the program is closed.
