@@ -1,0 +1,17 @@
+C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBotDotnetCore\bin\Debug\netcoreapp2.2\ubuntu-x64\Exurb1a.db
+C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBotDotnetCore\bin\Debug\netcoreapp2.2\ubuntu-x64\libhostpolicy.so
+C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBotDotnetCore\bin\Debug\netcoreapp2.2\ubuntu-x64\libhostfxr.so
+C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBotDotnetCore\bin\Debug\netcoreapp2.2\ubuntu-x64\Exurb1aBotDotnetCore
+C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBotDotnetCore\bin\Debug\netcoreapp2.2\ubuntu-x64\Exurb1aBotDotnetCore.dll.config
+C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBotDotnetCore\bin\Debug\netcoreapp2.2\ubuntu-x64\Exurb1aBotDotnetCore.deps.json
+C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBotDotnetCore\bin\Debug\netcoreapp2.2\ubuntu-x64\Exurb1aBotDotnetCore.runtimeconfig.json
+C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBotDotnetCore\bin\Debug\netcoreapp2.2\ubuntu-x64\Exurb1aBotDotnetCore.runtimeconfig.dev.json
+C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBotDotnetCore\bin\Debug\netcoreapp2.2\ubuntu-x64\Exurb1aBotDotnetCore.dll
+C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBotDotnetCore\bin\Debug\netcoreapp2.2\ubuntu-x64\Exurb1aBotDotnetCore.pdb
+C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBotDotnetCore\obj\Debug\netcoreapp2.2\ubuntu-x64\Exurb1aBotDotnetCore.csprojAssemblyReference.cache
+C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBotDotnetCore\obj\Debug\netcoreapp2.2\ubuntu-x64\Exurb1aBotDotnetCore.csproj.CoreCompileInputs.cache
+C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBotDotnetCore\obj\Debug\netcoreapp2.2\ubuntu-x64\Exurb1aBotDotnetCore.AssemblyInfoInputs.cache
+C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBotDotnetCore\obj\Debug\netcoreapp2.2\ubuntu-x64\Exurb1aBotDotnetCore.AssemblyInfo.cs
+C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBotDotnetCore\obj\Debug\netcoreapp2.2\ubuntu-x64\Exurb1aBotDotnetCore.dll
+C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBotDotnetCore\obj\Debug\netcoreapp2.2\ubuntu-x64\Exurb1aBotDotnetCore.pdb
+C:\Users\gebruiker\Desktop\SandraGeisha\Exurb1aBot\Exurb1aBotDotnetCore\obj\Debug\netcoreapp2.2\ubuntu-x64\Exurb1aBotDotnetCore.genruntimeconfig.cache

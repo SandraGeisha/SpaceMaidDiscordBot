@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <UserSecretsId>f1251188-4c7c-4bcf-b6c5-a2f31244898c</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Exurb1a.db" />
+    <None Remove="exurb1a_Y5Y_icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Exurb1a.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="exurb1a_Y5Y_icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Discord.Net" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="3.1.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="3.1.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.6" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+</Project>
