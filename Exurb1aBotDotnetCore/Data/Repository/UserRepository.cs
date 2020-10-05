@@ -3,7 +3,6 @@ using Exurb1aBot.Model.Domain;
 using Exurb1aBot.Model.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using Exurb1aBot.Model.Exceptions.QuoteExceptions;
 
 namespace Exurb1aBot.Data.Repository {
     class UserRepository : IUserRepository {

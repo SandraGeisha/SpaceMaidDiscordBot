@@ -1,9 +1,11 @@
-﻿using Exurb1aBot.Model.Domain;
+﻿using Discord;
+using Exurb1aBot.Model.Domain;
 using Exurb1aBot.Model.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace Exurb1aBot.Data.Repository {
     public class RoleRepository : IRoleRepository {
@@ -20,13 +22,19 @@ namespace Exurb1aBot.Data.Repository {
             _context.SaveChanges();
         }
 
+        public bool EmojiExist(string emoji) {
+            return _roles.ToList().FirstOrDefault(
+                 r => r.RoleType == Enums.RoleType.Reaction && r.ReactionEmote.Equals(emoji)
+            ) != null;
+        }
+
         public bool Exist(string name) {
             return _roles.ToList().FirstOrDefault(
                 r => r.Name.ToLower().Trim().Equals(name.ToLower().Trim())
             ) != null;
         }
 
-        public bool Exist(long id) {
+        public bool Exist(ulong id) {
             return _roles.ToList().FirstOrDefault(r => r.ID == id) != null;
         }
 

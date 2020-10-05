@@ -14,8 +14,6 @@ using Exurb1aBot.Util.EmbedBuilders;
 using Exurb1aBot.Model.Exceptions.QuoteExceptions;
 using Microsoft.Extensions.Configuration;
 using System.IO;
-using Microsoft.Extensions.Configuration.UserSecrets;
-using Microsoft.Extensions.Options;
 using Exurb1aBot.Util.Workers;
 
 namespace Exurb1aBot {
@@ -51,9 +49,7 @@ namespace Exurb1aBot {
 
             _client.UserVoiceStateUpdated += UserVCUpdated;
 
-            //string token = _services.GetService<IOptions<Secrets>>().Value.Token;
-
-            await _client.LoginAsync(TokenType.Bot, "NTQ4MjA0NjM2NzM4Mjg5NjY3.XG7pWg.tBmulo8JTmcDcsMWT99U9hc6U-U");
+            await _client.LoginAsync(TokenType.Bot, "nice try");
             await _client.StartAsync();
 
             // Block this task until the program is closed.
@@ -95,9 +91,6 @@ namespace Exurb1aBot {
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddEnvironmentVariables();
 
-            //builder.AddUserSecrets<Secrets>();
-            //IConfigurationRoot configuration = builder.Build();
-
 
             _services = new ServiceCollection()
                 .AddSingleton(_client)
@@ -106,7 +99,7 @@ namespace Exurb1aBot {
                 .AddScoped<IUserRepository,UserRepository>()
                 .AddScoped<IScoreRepsitory,ScoreRepository>()
                 .AddScoped<ILocationRepository,LocationRepository>()
-               // .Configure<Secrets>(configuration.GetSection("Secrets"))
+                .AddScoped<IRoleRepository, RoleRepository>()
                 .AddOptions()
                 .BuildServiceProvider();
         }

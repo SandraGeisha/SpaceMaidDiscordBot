@@ -14,6 +14,7 @@ namespace Exurb1aBot.Data.Mapper {
             builder.Property(r => r.Name).IsRequired();
             builder.HasIndex(r => r.Name).IsUnique();
             builder.Property(r => r.ReactionEmote).IsRequired(false);
+            builder.Property(r => r.EmoteType).IsRequired(false).HasConversion<string>();
         }
     }
 }

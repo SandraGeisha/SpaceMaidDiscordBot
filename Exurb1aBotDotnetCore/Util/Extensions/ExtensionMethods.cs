@@ -1,12 +1,19 @@
 ﻿using Discord;
+using Exurb1aBot.Model.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using IMessage = Discord.IMessage;
 
 namespace Exurb1aBot.Util.Extensions {
     public static class ExtensionMethods {
+        public static bool IsEmoji(this string input) {
+            Regex rx = new Regex(Enums.EmojiRegex,RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            return rx.IsMatch(input);
+        }
+
         public static string RemoveAbuseCharacters(this string input) {
             return input
                 .Replace("`", "'");
