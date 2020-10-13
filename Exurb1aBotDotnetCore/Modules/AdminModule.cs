@@ -8,6 +8,10 @@ using Discord.WebSocket;
 using System.Net.Sockets;
 using Exurb1aBot.Model.Domain;
 using Exurb1aBot.Util.Extensions;
+using System.Collections;
+using System.Collections.Generic;
+using Discord.Rest;
+using System.Linq;
 
 namespace Exurb1aBot.Modules {
     [Name("Admin Commands")]
@@ -16,9 +20,11 @@ namespace Exurb1aBot.Modules {
     public class AdminModule : ModuleBase<SocketCommandContext> {
 
         private IRoleRepository _roleRepo;
+        private IReactionMessageRepository _reactionRepo;
 
-        public AdminModule(IRoleRepository roleRepo) {
+        public AdminModule(IRoleRepository roleRepo, IReactionMessageRepository reactionRepo) {
             _roleRepo = roleRepo;
+            _reactionRepo = reactionRepo;
         }
 
         #region Shutdown Command
@@ -111,9 +117,22 @@ namespace Exurb1aBot.Modules {
                 public async Task RemoveAssignRole(SocketRole role) {
                     await RemoveRoll(role);
                 }
-            #endregion
+        #endregion
 
-            #region Reaction Roles
+        #region Reaction Roles
+                [Command("show reaction roles")]
+                public async Task ShowReactionRoles([Remainder] string s = "" ) {
+                    IEnumerable<Role> roles = _roleRepo.GetAllByType(Enums.RoleType.Reaction);
+
+                    if (!roles.Any()) {
+                        await Context.Channel.SendMessageAsync("There's no roles configured.");
+                        return;
+                    }
+
+                    Embed emb = EmbedBuilderFunctions.ShowReactionRolesEmbed(roles, Context);
+                    await Context.Channel.SendMessageAsync(embed: emb);
+                }
+
                 [Command("add reaction role")]
                 public async Task AddReactionRole(SocketRole role, string emote, [Remainder]string _ = "") {
                     bool parse = Emote.TryParse(emote, out Emote _);
@@ -162,7 +181,26 @@ namespace Exurb1aBot.Modules {
                 public async Task RemoveReactionRole(SocketRole role) {
                     await RemoveRoll(role);
                 }
-            #endregion
+        #endregion
+        #endregion
+
+        #region Reaction Message
+            [Command("reaction message")]
+            public async Task PlaceReactionMessage() {
+            await EmbedBuilderFunctions.GiveErrorSyntax("reaction message", new string[] { "**message**(required)" },
+                new string[] { $"{Program.prefix}reaction message have you read the rules?" }, Context);
+            }
+
+            [Command("reaction message")]
+            public async Task PlaceReactionMessage([Remainder] string message) {         
+                Embed emb = EmbedBuilderFunctions.MakeReactionMessageEmbed(message, Context).Build();
+                RestUserMessage msg = await Context.Channel.SendMessageAsync(embed: emb);
+                _reactionRepo.AddReactionMessage(msg.Id);
+
+                IEnumerable<Role> roles = _roleRepo.GetAllByType(Enums.RoleType.Reaction);
+                IEnumerable<IEmote> emotes = GetEmotes(roles);
+                await msg.AddReactionsAsync(emotes.ToArray());
+            }
         #endregion
 
         #region Private functions
@@ -175,7 +213,13 @@ namespace Exurb1aBot.Modules {
                 Role removeRole = _roleRepo.GetByName(role.Name);
                 _roleRepo.Remove(removeRole);
                 await Context.Channel.SendMessageAsync(string.Format("The role {0} is no longer in the database.", role.Name));
-            }
+        }
+
+        private IEnumerable<IEmote> GetEmotes(IEnumerable<Role> roles) {
+            return roles.Select(r => {
+                return r.EmoteType == Enums.EmoteType.Emoji ? (IEmote)new Emoji(r.ReactionEmote) : (IEmote)Emote.Parse(r.ReactionEmote);
+            }).ToList();
+        }
         #endregion
     }
 }

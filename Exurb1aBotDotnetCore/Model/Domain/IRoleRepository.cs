@@ -8,6 +8,8 @@ namespace Exurb1aBot.Model.Domain {
         void Add(Role role);
         void Remove(Role role);
         IEnumerable<Role> GetAll();
+        IEnumerable<Role> GetAllByType(Enums.RoleType type);
+        Role GetRoleByEmoji(string emoji);
         Role GetByName(string name);
     }
 }

@@ -42,11 +42,19 @@ namespace Exurb1aBot.Data.Repository {
             return _roles.ToList();
         }
 
+        public IEnumerable<Role> GetAllByType(Enums.RoleType type) {
+            return GetAll().Where(r => r.RoleType.Equals(type));
+        }
+
         public Role GetByName(string name) {
             if (!Exist(name))
                 throw new RoleNotFoundException(string.Format("The specified role with name {0} doesn't exist.",name));
 
             return GetAll().First(r => r.Name.ToLower().Trim().Equals(name.ToLower().Trim()));
+        }
+
+        public Role GetRoleByEmoji(string emoji) {
+            return _roles.FirstOrDefault(r => r.ReactionEmote == emoji);
         }
 
         public void Remove(Role role) {
