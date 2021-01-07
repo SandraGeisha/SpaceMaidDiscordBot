@@ -89,6 +89,11 @@ namespace Exurb1aBot.Modules {
                 _userRepo.AddUser(quotee);
             }
 
+            if (quote.Length >= 1024) {
+                await Context.Channel.SendMessageAsync("This quote is too long");
+                return;
+            }
+
 
             Quote q = new Quote(quote.Replace("`","'"), creator, quotee, DateTime.Now,Context.Guild);
 
@@ -119,6 +124,11 @@ namespace Exurb1aBot.Modules {
                 if (quotee2 == null) {
                     quotee2 = new EntityUser(quotee);
                     _userRepo.AddUser(quotee2);
+                }
+
+                if (quote.Length >= 1024) {
+                    await channel.SendMessageAsync("This quote is too long");
+                    return;
                 }
 
                 Quote q = new Quote(quote, cr, quotee2, time,creator.Guild) {

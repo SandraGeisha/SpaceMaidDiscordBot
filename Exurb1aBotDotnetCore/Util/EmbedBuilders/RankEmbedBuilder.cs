@@ -28,16 +28,16 @@ namespace Exurb1aBot.Util.EmbedBuilders {
         }
 
         public async static Task<EmbedBuilder> BuildRankEmbed(ICommandContext context,Scores[] scores, EntityUser[] users, int page, Enums.ScoreType type) {
-            string title = $"Exurb1a Ranking: Times Quoted- page {page+1}";
+            string title = $"Oreocafé Ranking: Times Quoted- page {page+1}";
             string status = "Quotes";
 
             switch (type) {
                 case Enums.ScoreType.Qouter:
-                    title = $"Exurb1a Ranking: Quotes Created - page {page + 1}";
+                    title = $"Oreocafé Ranking: Quotes Created - page {page + 1}";
                     status = "Quotes created";
                     break;
                 case Enums.ScoreType.VC:
-                    title = $"Exurb1a Ranking: VC Score- page {page + 1}";
+                    title = $"Oreocafé Ranking: VC Score- page {page + 1}";
                     status = "Points";
                     break;
             }

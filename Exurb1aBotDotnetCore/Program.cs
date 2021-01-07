@@ -28,7 +28,7 @@ namespace Exurb1aBot {
         private IReactionMessageRepository _reactionMessages;
         private IRoleRepository _roleRepo;
 
-        public static string prefix = "-";
+        public static string prefix = "%";
 
         static void Main(string[] args) {
             new Program().MainAsync().GetAwaiter().GetResult();
@@ -58,7 +58,7 @@ namespace Exurb1aBot {
 
             _client.UserVoiceStateUpdated += UserVCUpdated;
 
-            await _client.LoginAsync(TokenType.Bot, "token");
+            await _client.LoginAsync(TokenType.Bot, "redacted");
             await _client.StartAsync();
 
             // Block this task until the program is closed.

@@ -123,6 +123,19 @@ namespace Exurb1aBot.Modules {
         }
         #endregion
 
+        [Command("fuck")]
+        [Alias("f")]
+        public async Task FuckThatPerson(IGuildUser user, [Remainder] string s="") {
+            await Context.Channel.SendMessageAsync($"Fuck you {user.Mention}");
+        }
+
+        [Command("fuck")]
+        [Alias("f")]
+        public async Task FuckThatPerson([Remainder] string s = "") {
+            await EmbedBuilderFunctions.GiveErrorSyntax("fuck", new string[] { "User (required)" },
+                new string[] { $"{Program.prefix}fuck @sov"}, Context);
+        }
+
         #region Quick poll
 
         [Command("qp")]
