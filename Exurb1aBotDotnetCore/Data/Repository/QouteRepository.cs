@@ -82,5 +82,9 @@ namespace Exurb1aBot.Data.Repository {
                     ).Count() >= 1;
 
         }
+
+        public IEnumerable<Quote> GetAll() {
+            return Quotes.ToList();
+        }
     }
 }

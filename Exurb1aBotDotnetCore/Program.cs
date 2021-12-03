@@ -29,6 +29,7 @@ namespace Exurb1aBot {
         private IRoleRepository _roleRepo;
 
         public static string prefix = "%";
+        private string fileName = "removeQuote.txt";
 
         static void Main(string[] args) {
             new Program().MainAsync().GetAwaiter().GetResult();
@@ -57,8 +58,7 @@ namespace Exurb1aBot {
             _client.ReactionRemoved += _client_ReactionRemoved;
 
             _client.UserVoiceStateUpdated += UserVCUpdated;
-
-            await _client.LoginAsync(TokenType.Bot, "redacted");
+            await _client.LoginAsync(TokenType.Bot, "NTQ4MjA0NjM2NzM4Mjg5NjY3.XG7pWg.wvbA4hXWtJ4WzkKBjHv6RxDMk-A");
             await _client.StartAsync();
 
             // Block this task until the program is closed.
@@ -84,8 +84,23 @@ namespace Exurb1aBot {
         }
 
         private async Task ReactionAdded(Cacheable<IUserMessage,ulong> ch,ISocketMessageChannel chanel,SocketReaction reaction) {
-            IUserMessage msg = await ch.GetOrDownloadAsync();  
-            if (reaction.Emote.Name == "💬" && !msg.Author.IsBot) {
+            IUserMessage msg = await ch.GetOrDownloadAsync();
+            if (msg == null)
+                return;
+
+            if (QuoteModule._trackedQuoteList.Keys.Contains(msg.Id) && !reaction.User.Value.IsBot) {
+                if (reaction.Emote.Name == "✅") {
+                    await chanel.DeleteMessageAsync(msg.Id);
+                    QuoteModule._trackedQuoteList.Remove(msg.Id);
+                } else {
+                    //add to file
+                    File.AppendAllLines(fileName, new string[] { QuoteModule._trackedQuoteList[msg.Id].Id.ToString() });
+                    await chanel.DeleteMessageAsync(msg.Id);
+                    QuoteModule._trackedQuoteList.Remove(msg.Id);
+                }
+            }
+
+            if (reaction.Emote.Name == "💬" && msg.Author.IsBot) {
                     try {
                     await QuoteModule.BotAddQuote(_services.GetService<IQouteRepository>(),
                         _services.GetService<IScoreRepsitory>(), _services.GetService<IUserRepository>(),
@@ -133,6 +148,7 @@ namespace Exurb1aBot {
                 .AddScoped<ILocationRepository,LocationRepository>()
                 .AddScoped<IRoleRepository, RoleRepository>()
                 .AddScoped<IReactionMessageRepository, ReactionMessageRepository>()
+                .AddScoped<IStonkRepository, StonkRepository>()
                 .AddOptions()
                 .BuildServiceProvider();
         }

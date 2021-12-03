@@ -12,6 +12,8 @@ namespace Exurb1aBot.Data {
         public DbSet<Location> Location { get; set; }
         public DbSet<Scores> Scores { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<Portfolio> Portfolios { get; set; }
+        public DbSet<Stock> Stocks { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
             //optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=Exurb1a;Integrated Security=True");
@@ -28,7 +30,10 @@ namespace Exurb1aBot.Data {
                         .ApplyConfiguration<Quote>(new QuoteMapper())
                         .ApplyConfiguration<Location>(new LocationMapper())
                         .ApplyConfiguration<Scores>(new ScoreMapper())
-                        .ApplyConfiguration<Role>(new RoleMapper());
+                        .ApplyConfiguration<Role>(new RoleMapper())
+                        .ApplyConfiguration<Portfolio>(new PortfolioMapper())
+                        .ApplyConfiguration<StockPortfolio>(new StockPortfolioMapper())
+                        .ApplyConfiguration<Stock>(new StockMapper());
         }
 
         public void Initialize() {
@@ -37,6 +42,8 @@ namespace Exurb1aBot.Data {
             Location.Load();
             Scores.Load();
             Roles.Load();
+            Portfolios.Load();
+            Stocks.Load();
         }
     }
 }

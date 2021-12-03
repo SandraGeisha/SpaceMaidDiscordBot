@@ -79,7 +79,7 @@ namespace Exurb1aBot.Util.EmbedBuilders {
             await context.Channel.SendMessageAsync(embed: ebm.Build());
         }
 
-        public async static Task DisplayQuote(Quote q, IGuildUser[] users, ICommandContext context) {
+        public async static Task<IUserMessage> DisplayQuote(Quote q, IGuildUser[] users, ICommandContext context) {
             EmbedBuilder ebm = new EmbedBuilder() {
                 Color = Color.Green
             };
@@ -105,7 +105,7 @@ namespace Exurb1aBot.Util.EmbedBuilders {
             efb.WithText($"Quoted by {(creator == null ? q.Creator.Username : (creator.Nickname??creator.Username))} on {q.Time.ToShortDateString()}");
             ebm.WithFooter(efb);
 
-            await context.Channel.SendMessageAsync(embed: ebm.Build());
+            return await context.Channel.SendMessageAsync(embed: ebm.Build());
         }
 
         public  static EmbedBuilder MakeEmbedPoll(string question, ICommandContext context) {

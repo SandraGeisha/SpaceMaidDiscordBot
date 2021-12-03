@@ -6,6 +6,8 @@ using Exurb1aBot.Model.Exceptions.QuoteExceptions;
 using Exurb1aBot.Model.ViewModel;
 using Exurb1aBot.Util.EmbedBuilders;
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using static Exurb1aBot.Model.Domain.Enums;
 
@@ -18,6 +20,7 @@ namespace Exurb1aBot.Modules {
         private readonly IUserRepository _userRepo;
         private IQouteRepository _qouteRepo;
         private readonly IScoreRepsitory _scoreRepo;
+        public static Dictionary<ulong,Quote> _trackedQuoteList = new Dictionary<ulong, Quote>();
         #endregion
 
         #region Constructor
@@ -252,6 +255,20 @@ namespace Exurb1aBot.Modules {
                 new string[] { $"{Program.prefix}quote remove 5 " }, Context);
         }
         #endregion
+
+        [Command("purge")]
+        public async Task PurgeByUser() {
+            IEnumerable<Quote> quotes = _qouteRepo.GetAll();
+
+            IEmote cross = new Emoji("❌");
+            IEmote check = new Emoji("✅");
+
+            foreach (Quote q in quotes.Take(10)) {
+                IUserMessage message = await EmbedBuilderFunctions.DisplayQuote(q, GetGuildUsers(q).Result, Context);
+                await message.AddReactionsAsync(new IEmote[] { cross, check });
+                _trackedQuoteList.Add(message.Id,q);
+            }
+        }
 
         #region Helping functions
         private async Task<IGuildUser[]> GetGuildUsers(Quote q) {

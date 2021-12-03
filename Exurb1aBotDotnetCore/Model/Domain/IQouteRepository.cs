@@ -5,6 +5,7 @@ using System.Collections.Generic;
 namespace Exurb1aBot.Model.Domain {
     public interface IQouteRepository {
         #region Methods
+        IEnumerable<Quote> GetAll();
             Quote GetQuoteById(int id);
             IEnumerable<Quote> GetAllByUser(ulong id);
             int GetId(Quote q);

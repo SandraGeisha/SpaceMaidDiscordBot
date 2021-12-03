@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <Content Include="Exurb1a.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="exurb1a_Y5Y_icon.ico" />
   </ItemGroup>

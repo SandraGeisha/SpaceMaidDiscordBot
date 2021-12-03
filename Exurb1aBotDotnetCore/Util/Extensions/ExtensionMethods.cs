@@ -19,7 +19,14 @@ namespace Exurb1aBot.Util.Extensions {
                 .Replace("`", "'");
         }
 
-         public static async Task AddNavigations(this IMessage msg,int indx,int maxLength) {
+        public static string GetClosestValue(Dictionary<decimal, string> positive, Dictionary<decimal, string> negative, decimal value) {
+            if (value >= 0)
+                return positive.OrderBy(e => Math.Abs(e.Key - value)).FirstOrDefault().Value;
+
+            return negative.OrderBy(e => Math.Abs(e.Key - value)).FirstOrDefault().Value;
+        }
+
+        public static async Task AddNavigations(this IMessage msg,int indx,int maxLength) {
             var ms = msg as IUserMessage;
 
             if (indx != 0)
