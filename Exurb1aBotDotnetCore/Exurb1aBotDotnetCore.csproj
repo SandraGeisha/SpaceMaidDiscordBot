@@ -5,18 +5,17 @@
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>f1251188-4c7c-4bcf-b6c5-a2f31244898c</UserSecretsId>
     <RootNamespace>Exurb1aBot</RootNamespace>
+    <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Exurb1a.db" />
-    <None Remove="exurb1a_Y5Y_icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Exurb1a.db">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="exurb1a_Y5Y_icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
