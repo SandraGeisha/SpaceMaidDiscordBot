@@ -256,19 +256,19 @@ namespace Exurb1aBot.Modules {
         }
         #endregion
 
-        [Command("purge")]
-        public async Task PurgeByUser() {
-            IEnumerable<Quote> quotes = _qouteRepo.GetAll();
+        //[Command("purge")]
+        //public async Task PurgeByUser() {
+        //    IEnumerable<Quote> quotes = _qouteRepo.GetAll();
 
-            IEmote cross = new Emoji("❌");
-            IEmote check = new Emoji("✅");
+        //    IEmote cross = new Emoji("❌");
+        //    IEmote check = new Emoji("✅");
 
-            foreach (Quote q in quotes.Take(10)) {
-                IUserMessage message = await EmbedBuilderFunctions.DisplayQuote(q, GetGuildUsers(q).Result, Context);
-                await message.AddReactionsAsync(new IEmote[] { cross, check });
-                _trackedQuoteList.Add(message.Id,q);
-            }
-        }
+        //    foreach (Quote q in quotes.Take(10)) {
+        //        IUserMessage message = await EmbedBuilderFunctions.DisplayQuote(q, GetGuildUsers(q).Result, Context);
+        //        await message.AddReactionsAsync(new IEmote[] { cross, check });
+        //        _trackedQuoteList.Add(message.Id,q);
+        //    }
+        //}
 
         #region Helping functions
         private async Task<IGuildUser[]> GetGuildUsers(Quote q) {

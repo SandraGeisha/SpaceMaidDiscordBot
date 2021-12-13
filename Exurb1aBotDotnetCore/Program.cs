@@ -25,8 +25,6 @@ namespace Exurb1aBot {
         private ApplicationDbContext _context;
 
         private VCWorkerService _workerService;
-        private IReactionMessageRepository _reactionMessages;
-        private IRoleRepository _roleRepo;
 
         public static string prefix = "%";
         private string fileName = "removeQuote.txt";
@@ -44,10 +42,6 @@ namespace Exurb1aBot {
 
             IScoreRepsitory scoreRepo = _services.GetService<IScoreRepsitory>();
             _workerService = new VCWorkerService(scoreRepo);
-
-            _reactionMessages = _services.GetService<IReactionMessageRepository>();
-            _roleRepo = _services.GetService<IRoleRepository>();
-
             Console.WriteLine("Initializing API");
             ApiHelper.InitializeClient();
 
@@ -55,26 +49,13 @@ namespace Exurb1aBot {
 
             _client.Log += Log;
             _client.ReactionAdded += ReactionAdded;
-            _client.ReactionRemoved += _client_ReactionRemoved;
 
             _client.UserVoiceStateUpdated += UserVCUpdated;
-            await _client.LoginAsync(TokenType.Bot, "NTQ4MjA0NjM2NzM4Mjg5NjY3.XG7pWg.wvbA4hXWtJ4WzkKBjHv6RxDMk-A");
+            await _client.LoginAsync(TokenType.Bot, "NTQ4MjA0NjM2NzM4Mjg5NjY3.XG7pWg.JQJZLRBxoWwMqDqXuW7KjVmjVNs");
             await _client.StartAsync();
 
             // Block this task until the program is closed.
             await Task.Delay(-1);
-        }
-
-        private async Task _client_ReactionRemoved(Cacheable<IUserMessage, ulong> ch, ISocketMessageChannel channel, SocketReaction reaction) {
-            if (_reactionMessages.IsReactionMessage(reaction.MessageId) && _roleRepo.EmojiExist(reaction.Emote.Name)) {
-                Role role = _roleRepo.GetRoleByEmoji(reaction.Emote.Name);
-                IGuildUser user = reaction.User.GetValueOrDefault() as IGuildUser;
-
-                if (user != null && !user.IsBot && user.RoleIds.Contains(role.ID)) {
-                    IRole grole= (channel as IGuildChannel).Guild.GetRole(role.ID);
-                    await user.RemoveRoleAsync(grole);
-                }
-            }
         }
 
         private async Task UserVCUpdated(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3) {
@@ -115,16 +96,6 @@ namespace Exurb1aBot {
                     }
             }
 
-            if (_reactionMessages.IsReactionMessage(reaction.MessageId) && _roleRepo.EmojiExist(reaction.Emote.Name)) {
-                Role role = _roleRepo.GetRoleByEmoji(reaction.Emote.Name);
-                IGuildUser user = reaction.User.GetValueOrDefault() as IGuildUser;
-
-                if (user != null && !user.IsBot) {
-                    IRole grole = (chanel as IGuildChannel).Guild.GetRole(role.ID);
-                    await user.AddRoleAsync(grole);
-                }
-            }
-
         }
 
         private void DatabaseConnection() {
@@ -146,9 +117,6 @@ namespace Exurb1aBot {
                 .AddScoped<IUserRepository,UserRepository>()
                 .AddScoped<IScoreRepsitory,ScoreRepository>()
                 .AddScoped<ILocationRepository,LocationRepository>()
-                .AddScoped<IRoleRepository, RoleRepository>()
-                .AddScoped<IReactionMessageRepository, ReactionMessageRepository>()
-                .AddScoped<IStonkRepository, StonkRepository>()
                 .AddOptions()
                 .BuildServiceProvider();
         }

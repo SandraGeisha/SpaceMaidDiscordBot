@@ -120,15 +120,6 @@ namespace Exurb1aBot.Util.EmbedBuilders {
             });
         }       
         
-        public  static EmbedBuilder MakeReactionMessageEmbed(string message, ICommandContext context) {
-            return new EmbedBuilder {
-                Title = "React To This Message!",
-                Description = message,
-                Color = Color.Green,
-                Timestamp = DateTime.Now
-            }.WithFooter(AddFooter(context).Result);
-        }
-        
         public async static Task UnhandledException(string ex,ISocketMessageChannel channel) {
             EmbedBuilder builder = new EmbedBuilder {
                 ImageUrl = "https://37.media.tumblr.com/40bc69a6ae90bfe6a90fbdce4fb7516b/tumblr_n6k977lF4T1rna0heo1_1280.gif",
@@ -139,34 +130,5 @@ namespace Exurb1aBot.Util.EmbedBuilders {
             await channel.SendMessageAsync(embed: builder.Build());
         }
 
-        public static Embed ShowCommandRolesEmbed(IEnumerable<Role> roles, ICommandContext context) {
-            EmbedBuilder emb = new EmbedBuilder() {
-                Color = Color.Green,
-                Title = "Roles",
-                Description = "Once you reach Tier 12, you can assign these roles yourself with the roles assign command.",
-            }.WithFooter(AddFooter(context).Result);
-
-            foreach (Role r in roles) {
-                emb.AddField("Role Name", r.Name, true);
-            }
-
-            return emb.Build();
-        }
-
-        public static Embed ShowReactionRolesEmbed(IEnumerable<Role> roles, ICommandContext context) {
-            EmbedBuilder emb = new EmbedBuilder() {
-                Color = Color.Green,
-                Title = "Reaction Roles",
-                Description = "This is a list of all reaction roles currently configured.",
-            }.WithFooter(AddFooter(context).Result);
-
-            foreach (Role r in roles) {
-                emb.AddField("Role Name", r.Name, true);
-                emb.AddField("Emote type", r.EmoteType, true);
-                emb.AddField("Emote", (r.EmoteType == Enums.EmoteType.Emoji ? (IEmote)new Emoji(r.ReactionEmote) : (IEmote)Emote.Parse(r.ReactionEmote)),true);
-            }
-
-            return emb.Build();
-        }
     }
 }
