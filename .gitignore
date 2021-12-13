@@ -158,7 +158,8 @@ csx/
 # Microsoft Azure Emulator
 ecf/
 rcf/
-
+bin/
+obj/
 # Windows Store app package directories and files
 AppPackages/
 BundleArtifacts/
@@ -223,6 +224,7 @@ FakesAssemblies/
 *.opt
 
 # Visual Studio LightSwitch build output
+**/bin/*
 **/*.HTMLClient/GeneratedArtifacts
 **/*.DesktopClient/GeneratedArtifacts
 **/*.DesktopClient/ModelManifest.xml
