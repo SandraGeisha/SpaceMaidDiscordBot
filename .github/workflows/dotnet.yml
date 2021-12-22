@@ -21,6 +21,14 @@ jobs:
       run: |
         dotnet build --configuration Release --no-restore
         dotnet publish -c Release -r linux-x64 --self-contained true /p:UseAppHost=true
+    - name: Remove old directory (Test)
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_IP }}
+        username: root
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: ls -la /home/
     - name: deploy file to server
       uses: wlixcc/SFTP-Deploy-Action@v1.0
       with:
