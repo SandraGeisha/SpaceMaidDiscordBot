@@ -54,7 +54,7 @@ namespace Exurb1aBot {
             _client.UserVoiceStateUpdated += UserVCUpdated;
             await _client.LoginAsync(TokenType.Bot, _config.GetValue<string>("Tokens:Staging"));
             await _client.StartAsync();
-
+      //test
             // Block this task until the program is closed.
             await Task.Delay(-1);
         }
