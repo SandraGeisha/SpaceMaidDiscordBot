@@ -42,11 +42,17 @@ jobs:
       uses: appleboy/ssh-action@master
       env:
         "TOKENST": ${{ secrets.BOTTOKENSTAGING }}
+        "TOKENLIVE": ${{ secrets.BOTTOKENLIVE }}
+        "DBLIVE": ${{ secrets.DBLIVE }}
+        "DBSTAGING": ${{ secrets.DBSTAGING }}
       with:
         host: ${{ secrets.SERVER_IP }}
         username: root
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 22
-        envs: TOKENST
-        script: sed -i 's/$Token_Staging/'"$TOKENST"'/g' /home/sandra/github/publish/appsettings.json
-          
+        envs: TOKENST,TOKENLIVE
+        script: |
+          sed -i 's/$Token_Staging/'"$TOKENST"'/g' /home/sandra/github/publish/appsettings.json
+          sed -i 's/$Token_Live/'"$TOKENLIVE"'/g' /home/sandra/github/publish/appsettings.json
+          sed -i 's/$DB_Live/'"$DBLIVE"'/g' /home/sandra/github/publish/appsettings.json
+          sed -i 's/$DB_Staging/'"$DBSTAGING"'/g' /home/sandra/github/publish/appsettings.json
