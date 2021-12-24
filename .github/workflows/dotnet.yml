@@ -32,7 +32,7 @@ jobs:
     - name: Test Environment variables
       uses: appleboy/ssh-action@master
       env:
-        "FOO": "BAR"
+        "FOO": ${{ secrets.TEST }}
       with:
         host: ${{ secrets.SERVER_IP }}
         username: root
