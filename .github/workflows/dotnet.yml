@@ -21,7 +21,7 @@ jobs:
       run: |
         dotnet build --configuration Release --no-restore
         dotnet publish -c Release -r linux-x64 --self-contained true /p:UseAppHost=true
-    - name: Remove old directory (Test)
+    - name: Remove old release
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SERVER_IP }}
@@ -29,4 +29,14 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 22
         script: rm -rf /home/sandra/github/*
-
+    - name: Test Environment variables
+      uses: appleboy/ssh-action@master
+      env:
+        "Foo": ${{ secrets.TEST }}
+      with:
+        host: ${{ secrets.SERVER_IP }}
+        username: root
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: echo "I am $Foo"
+          
