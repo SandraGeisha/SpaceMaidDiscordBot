@@ -32,12 +32,12 @@ jobs:
     - name: Test Environment variables
       uses: appleboy/ssh-action@master
       env:
-        "Foo": ${{ secrets.TEST }}
+        "FOO": "BAR"
       with:
         host: ${{ secrets.SERVER_IP }}
         username: root
-        envs: Foo
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 22
-        script: echo "I am $Foo"
+        envs: FOO
+        script: echo "I am $FOO"
           
