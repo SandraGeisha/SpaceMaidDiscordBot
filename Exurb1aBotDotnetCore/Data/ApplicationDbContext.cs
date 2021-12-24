@@ -3,6 +3,7 @@ using Exurb1aBot.Model.Domain;
 using Exurb1aBot.Model.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Configuration;
 
 namespace Exurb1aBot.Data {
     public class ApplicationDbContext : DbContext {
@@ -12,16 +13,22 @@ namespace Exurb1aBot.Data {
         public DbSet<Location> Location { get; set; }
         public DbSet<Scores> Scores { get; set; }
 
+        private readonly IConfiguration _config;
+
+        public ApplicationDbContext(IConfiguration configuration) {
+          _config = configuration;
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-            //optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=Exurb1a;Integrated Security=True");
-            SqliteConnection sql = new SqliteConnection($"Data Source=Exurb1a.db");
+      //optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=Exurb1a;Integrated Security=True");
+            SqliteConnection sql = new SqliteConnection(_config.GetConnectionString("DBLive"));
             sql.Open();
             optionsBuilder.UseSqlite(sql);
             optionsBuilder.EnableSensitiveDataLogging(true);
             this.Database.AutoTransactionsEnabled = true;
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration<EntityUser>(new EntityUserMapper())
                   .ApplyConfiguration<Quote>(new QuoteMapper())

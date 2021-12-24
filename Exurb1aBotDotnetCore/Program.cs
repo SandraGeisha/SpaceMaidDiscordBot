@@ -23,7 +23,7 @@ namespace Exurb1aBot {
         private IServiceProvider _services;
         private CommandService _commands;
         private ApplicationDbContext _context;
-
+        private IConfiguration _config;
         private VCWorkerService _workerService;
 
         public static string prefix = "%";
@@ -36,7 +36,8 @@ namespace Exurb1aBot {
         public async Task MainAsync() {
             _client = new DiscordSocketClient();
             _commands = new CommandService();
-
+            
+            BuildConfigurationBuilder();
             DatabaseConnection();
             DependencyInjection();
 
@@ -51,7 +52,7 @@ namespace Exurb1aBot {
             _client.ReactionAdded += ReactionAdded;
 
             _client.UserVoiceStateUpdated += UserVCUpdated;
-            await _client.LoginAsync(TokenType.Bot, "NTQ4MjA0NjM2NzM4Mjg5NjY3.XG7pWg.JQJZLRBxoWwMqDqXuW7KjVmjVNs");
+            await _client.LoginAsync(TokenType.Bot, _config.GetValue<string>("Tokens:Staging"));
             await _client.StartAsync();
 
             // Block this task until the program is closed.
@@ -99,26 +100,35 @@ namespace Exurb1aBot {
         }
 
         private void DatabaseConnection() {
-             _context = new ApplicationDbContext();
+             _context = new ApplicationDbContext(_config);
             Console.WriteLine("Initializing database");
             _context.Initialize();
         }
 
+        private void BuildConfigurationBuilder() {
+           IConfigurationBuilder builder = new ConfigurationBuilder()
+          .SetBasePath(Directory.GetCurrentDirectory())
+          .AddJsonFile("appsettings.json")
+          .AddEnvironmentVariables();
+
+
+            _config = builder.Build();
+        }
+
         private void DependencyInjection() {
-            IConfigurationBuilder builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddEnvironmentVariables();
 
 
             _services = new ServiceCollection()
                 .AddSingleton(_client)
                 .AddSingleton(_context)
+                .AddSingleton(_config)
                 .AddScoped< IQouteRepository, QouteRepository>()
                 .AddScoped<IUserRepository,UserRepository>()
                 .AddScoped<IScoreRepsitory,ScoreRepository>()
                 .AddScoped<ILocationRepository,LocationRepository>()
                 .AddOptions()
                 .BuildServiceProvider();
+
         }
 
 
@@ -223,11 +233,6 @@ namespace Exurb1aBot {
         public Task Log(LogMessage log) {
             Console.WriteLine(log.Message);
             return Task.CompletedTask;
-        }
-
-        public static void AddUserStore() {
-
-
         }
     }
 }
