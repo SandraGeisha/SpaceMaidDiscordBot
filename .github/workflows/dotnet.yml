@@ -31,5 +31,5 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 22
         envs: TOKENST
-        script: sed -i "'s/$Token_Staging/'"$TOKENST"'/g'" /home/sandra/github/publish/appsettings.json
+        script: sed -i 's/$Token_Staging/'"$TOKENST"'/g' /home/sandra/github/publish/appsettings.json
           
