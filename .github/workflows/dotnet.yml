@@ -28,13 +28,5 @@ jobs:
         username: root
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 22
-        script: ls -la /home/
-    - name: deploy file to server
-      uses: wlixcc/SFTP-Deploy-Action@v1.0
-      with:
-          username: 'root'
-          server: '${{ secrets.SERVER_IP }}'
-          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          local_path: './Exurb1aBotDotnetCore/bin/Release/net5.0/linux-x64/publish'
-          remote_path: '/home/sandra/github'
-          args: '-o ConnectTimeout=5'
+        script: rm -rf /home/sandra/github/*
+
