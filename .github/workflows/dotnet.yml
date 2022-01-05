@@ -53,6 +53,6 @@ jobs:
         envs: TOKENST,TOKENLIVE,DBLIVE,DBSTAGING
         script: |
           sed -i 's/$Token_Staging/'"$TOKENST"'/g' /home/sandra/github/master/publish/appsettings.json
-          sed -i 's/$Token_Live/'"$TOKENLIVE"'/g' /home/sandra/github//master/publish/appsettings.json
-          sed -i 's/$DB_Live/'"$DBLIVE"'/g' /home/sandra/github/publish/master/appsettings.json
-          sed -i 's/$DB_Staging/'"$DBSTAGING"'/g' /home/sandra/github/publish/master/appsettings.json
+          sed -i 's/$Token_Live/'"$TOKENLIVE"'/g' /home/sandra/github/master/publish/appsettings.json
+          sed -i 's/$DB_Live/'"$DBLIVE"'/g' /home/sandra/github/master/publish/appsettings.json
+          sed -i 's/$DB_Staging/'"$DBSTAGING"'/g' /home/sandra/github/master/publish/appsettings.json
