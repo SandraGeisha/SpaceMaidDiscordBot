@@ -28,7 +28,7 @@ jobs:
         username: root
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 22
-        script: rm -rf /home/sandra/github/*
+        script: rm -rf /home/sandra/github/master/*
     - name: deploy file to server
       uses: wlixcc/SFTP-Deploy-Action@v1.0
       with:
@@ -36,7 +36,7 @@ jobs:
           server: '${{ secrets.SERVER_IP }}'
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
           local_path: './Exurb1aBotDotnetCore/bin/Release/net5.0/linux-x64/publish'
-          remote_path: '/home/sandra/github'
+          remote_path: '/home/sandra/github/master'
           args: '-o ConnectTimeout=5'
     - name: Test Environment variables
       uses: appleboy/ssh-action@master
@@ -52,7 +52,7 @@ jobs:
         port: 22
         envs: TOKENST,TOKENLIVE,DBLIVE,DBSTAGING
         script: |
-          sed -i 's/$Token_Staging/'"$TOKENST"'/g' /home/sandra/github/publish/appsettings.json
-          sed -i 's/$Token_Live/'"$TOKENLIVE"'/g' /home/sandra/github/publish/appsettings.json
-          sed -i 's/$DB_Live/'"$DBLIVE"'/g' /home/sandra/github/publish/appsettings.json
-          sed -i 's/$DB_Staging/'"$DBSTAGING"'/g' /home/sandra/github/publish/appsettings.json
+          sed -i 's/$Token_Staging/'"$TOKENST"'/g' /home/sandra/github/master/publish/appsettings.json
+          sed -i 's/$Token_Live/'"$TOKENLIVE"'/g' /home/sandra/github//master/publish/appsettings.json
+          sed -i 's/$DB_Live/'"$DBLIVE"'/g' /home/sandra/github/publish/master/appsettings.json
+          sed -i 's/$DB_Staging/'"$DBSTAGING"'/g' /home/sandra/github/publish/master/appsettings.json
