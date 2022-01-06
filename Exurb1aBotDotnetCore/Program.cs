@@ -52,7 +52,7 @@ namespace Exurb1aBot {
             _client.ReactionAdded += ReactionAdded;
 
             _client.UserVoiceStateUpdated += UserVCUpdated;
-            await _client.LoginAsync(TokenType.Bot, _config.GetValue<string>("Tokens:Live"));
+            await _client.LoginAsync(TokenType.Bot, _config.GetValue<string>("Tokens:Staging"));
             await _client.StartAsync();
             // Block this task until the program is closed.
             await Task.Delay(-1);
@@ -81,7 +81,7 @@ namespace Exurb1aBot {
                 }
             }
 
-            if (reaction.Emote.Name == "💬" && msg.Author.IsBot) {
+            if (reaction.Emote.Name == "💬" && !msg.Author.IsBot) {
                     try {
                     await QuoteModule.BotAddQuote(_services.GetService<IQouteRepository>(),
                         _services.GetService<IScoreRepository>(), _services.GetService<IUserRepository>(),
