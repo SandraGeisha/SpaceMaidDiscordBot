@@ -20,10 +20,10 @@ namespace Exurb1aBot.Data {
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-      //optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=Exurb1a;Integrated Security=True");
-            SqliteConnection sql = new SqliteConnection(_config.GetConnectionString("DBLive"));
-            sql.Open();
-            optionsBuilder.UseSqlite(sql);
+      //SqliteConnection sql = new SqliteConnection(_config.GetConnectionString("DBLive"));
+      //sql.Open();
+      //optionsBuilder.UseSqlite(sql);
+      optionsBuilder.UseSqlServer(_config.GetConnectionString("DBLive"));
             optionsBuilder.EnableSensitiveDataLogging(true);
             this.Database.AutoTransactionsEnabled = true;
         }

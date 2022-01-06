@@ -41,7 +41,7 @@ namespace Exurb1aBot {
             DatabaseConnection();
             DependencyInjection();
 
-            IScoreRepsitory scoreRepo = _services.GetService<IScoreRepsitory>();
+            IScoreRepository scoreRepo = _services.GetService<IScoreRepository>();
             _workerService = new VCWorkerService(scoreRepo);
             Console.WriteLine("Initializing API");
             ApiHelper.InitializeClient();
@@ -52,9 +52,8 @@ namespace Exurb1aBot {
             _client.ReactionAdded += ReactionAdded;
 
             _client.UserVoiceStateUpdated += UserVCUpdated;
-            await _client.LoginAsync(TokenType.Bot, _config.GetValue<string>("Tokens:Staging"));
+            await _client.LoginAsync(TokenType.Bot, _config.GetValue<string>("Tokens:Live"));
             await _client.StartAsync();
-      //test
             // Block this task until the program is closed.
             await Task.Delay(-1);
         }
@@ -85,7 +84,7 @@ namespace Exurb1aBot {
             if (reaction.Emote.Name == "💬" && msg.Author.IsBot) {
                     try {
                     await QuoteModule.BotAddQuote(_services.GetService<IQouteRepository>(),
-                        _services.GetService<IScoreRepsitory>(), _services.GetService<IUserRepository>(),
+                        _services.GetService<IScoreRepository>(), _services.GetService<IUserRepository>(),
                         chanel, msg.Content, msg.Id, reaction.User.GetValueOrDefault(null) as IGuildUser
                         , msg.Author as IGuildUser, msg.Timestamp.DateTime);
                     }
@@ -124,7 +123,7 @@ namespace Exurb1aBot {
                 .AddSingleton(_config)
                 .AddScoped< IQouteRepository, QouteRepository>()
                 .AddScoped<IUserRepository,UserRepository>()
-                .AddScoped<IScoreRepsitory,ScoreRepository>()
+                .AddScoped<IScoreRepository,ScoreRepository>()
                 .AddScoped<ILocationRepository,LocationRepository>()
                 .AddOptions()
                 .BuildServiceProvider();

@@ -19,12 +19,12 @@ namespace Exurb1aBot.Modules {
         #region Fields
         private readonly IUserRepository _userRepo;
         private IQouteRepository _qouteRepo;
-        private readonly IScoreRepsitory _scoreRepo;
+        private readonly IScoreRepository _scoreRepo;
         public static Dictionary<ulong,Quote> _trackedQuoteList = new Dictionary<ulong, Quote>();
         #endregion
 
         #region Constructor
-        public QuoteModule(IQouteRepository quoteRepo, IUserRepository userRepository, IScoreRepsitory scoreRepo) {
+        public QuoteModule(IQouteRepository quoteRepo, IUserRepository userRepository, IScoreRepository scoreRepo) {
             _qouteRepo = quoteRepo;
             _userRepo = userRepository;
             _scoreRepo = scoreRepo;
@@ -112,7 +112,7 @@ namespace Exurb1aBot.Modules {
 
         }
 
-        public static async Task BotAddQuote(IQouteRepository _quoteRepo, IScoreRepsitory _scoreRepo,IUserRepository _userRepo ,IMessageChannel channel,string quote,ulong msgId, IGuildUser creator, IGuildUser quotee,DateTime time) {
+        public static async Task BotAddQuote(IQouteRepository _quoteRepo, IScoreRepository _scoreRepo,IUserRepository _userRepo ,IMessageChannel channel,string quote,ulong msgId, IGuildUser creator, IGuildUser quotee,DateTime time) {
             if (!_quoteRepo.MessageExists(quote,quotee,time)) {
 
                 EntityUser cr = _userRepo.GetUserById(creator.Id);

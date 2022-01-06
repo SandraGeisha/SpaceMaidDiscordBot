@@ -2,7 +2,7 @@
 using static Exurb1aBot.Model.Domain.Enums;
 
 namespace Exurb1aBot.Model.Domain {
-    public interface IScoreRepsitory {
+    public interface IScoreRepository {
         Scores GetScoreByUser(IUser user);
         bool HasScore(IUser user);
         void Increment(IUser user, ScoreType type, int val = 1);

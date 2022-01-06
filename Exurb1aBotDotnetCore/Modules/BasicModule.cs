@@ -16,7 +16,7 @@ namespace Exurb1aBot.Modules {
         #region Fields
         //necessary for the View All Commands
         private readonly CommandService _cc;
-        private readonly IScoreRepsitory _scoreRepo;
+        private readonly IScoreRepository _scoreRepo;
         private readonly string[] Insults = new string[]{
             "I do not consider {{name}} a vulture. I consider {{name}} something a vulture would eat.",
             "People clap when they see {{name}}. They clap their hands over their eyes.",
@@ -47,7 +47,7 @@ namespace Exurb1aBot.Modules {
         #endregion
 
         #region Constructor
-        public BasicModule(CommandService cc, IScoreRepsitory scoreRepo) {
+        public BasicModule(CommandService cc, IScoreRepository scoreRepo) {
             _cc = cc;
             _scoreRepo = scoreRepo;
         }

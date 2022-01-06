@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Exurb1aBot.Data.Repository {
-    public class ScoreRepository : IScoreRepsitory {
+    public class ScoreRepository : IScoreRepository {
         #region Private readonly fields
         private readonly ApplicationDbContext _context;
         private readonly DbSet<Scores> _scoreDbSet;

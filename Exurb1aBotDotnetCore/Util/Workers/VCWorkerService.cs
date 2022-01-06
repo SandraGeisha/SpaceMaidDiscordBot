@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 namespace Exurb1aBot.Util.Workers {
     public class VCWorkerService {
         public List<VCWorker> Workers { get; set; }
-        private readonly IScoreRepsitory _scoreRepo;
+        private readonly IScoreRepository _scoreRepo;
         private readonly Random _random;
 
-        public VCWorkerService(IScoreRepsitory scoreRepo) {
+        public VCWorkerService(IScoreRepository scoreRepo) {
             Workers = new List<VCWorker>();
             _scoreRepo = scoreRepo;
             _random = new Random();

@@ -12,10 +12,10 @@ namespace Exurb1aBot.Modules {
     [Group("top")]
     public class RankingModule : ModuleBase {
         internal static int _pageAmount = 10;
-        private readonly IScoreRepsitory _scoreRepo;
+        private readonly IScoreRepository _scoreRepo;
         private readonly IUserRepository _userRepo;
 
-        public RankingModule(IScoreRepsitory scoreRepo, IUserRepository userRepo) {
+        public RankingModule(IScoreRepository scoreRepo, IUserRepository userRepo) {
             _scoreRepo = scoreRepo;
             _userRepo = userRepo;
         }
