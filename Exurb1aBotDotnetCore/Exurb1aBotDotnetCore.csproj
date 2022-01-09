@@ -6,6 +6,7 @@
     <UserSecretsId>f1251188-4c7c-4bcf-b6c5-a2f31244898c</UserSecretsId>
     <RootNamespace>Exurb1aBot</RootNamespace>
     <NoWin32Manifest>true</NoWin32Manifest>
+    <Configurations>Debug;Release;Staging</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
