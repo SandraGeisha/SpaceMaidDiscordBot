@@ -1,0 +1,66 @@
+name: Release Staging
+
+on:
+  push:
+    branches: [ staging ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: |
+        dotnet build --configuration Staging --no-restore
+        dotnet publish -c Staging -r linux-x64 --self-contained true /p:UseAppHost=true
+    - name: Remove old release
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_IP }}
+        username: root
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: rm -rf /home/sandra/github/staging/*
+    - name: deploy file to server
+      uses: wlixcc/SFTP-Deploy-Action@v1.0
+      with:
+          username: 'root'
+          server: '${{ secrets.SERVER_IP }}'
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          local_path: './Exurb1aBotDotnetCore/bin/Release/net5.0/linux-x64/publish'
+          remote_path: '/home/sandra/github/staging'
+          args: '-o ConnectTimeout=5'
+    - name: Replace Environment variables
+      uses: appleboy/ssh-action@master
+      env:
+        "TOKENST": ${{ secrets.BOTTOKENSTAGING }}
+        "TOKENLIVE": ${{ secrets.BOTTOKENLIVE }}
+        "DBLIVE": ${{ secrets.DBLIVE }}
+        "DBSTAGING": ${{ secrets.DBSTAGING }}
+      with:
+        host: ${{ secrets.SERVER_IP }}
+        username: root
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        envs: TOKENST,TOKENLIVE,DBLIVE,DBSTAGING
+        script: |
+          sed -i 's/$Token_Staging/'"$TOKENST"'/g' /home/sandra/github/staging/publish/appsettings.json
+          sed -i 's/$Token_Live/'"$TOKENLIVE"'/g' /home/sandra/github/staging/publish/appsettings.json
+          sed -i 's/$DB_Live/'"$DBLIVE"'/g' /home/sandra/github/staging/publish/appsettings.json
+          sed -i 's/$DB_Staging/'"$DBSTAGING"'/g' /home/sandra/github/staging/publish/appsettings.json
+    - name: Execute script
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_IP }}
+        username: root
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: /home/sandra/github/scripts/staging.sh
