@@ -20,10 +20,13 @@ namespace Exurb1aBot.Data {
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-      //SqliteConnection sql = new SqliteConnection(_config.GetConnectionString("DBLive"));
-      //sql.Open();
-      //optionsBuilder.UseSqlite(sql);
-      optionsBuilder.UseSqlServer(_config.GetConnectionString("DBLive"));
+            #if Release
+                  optionsBuilder.UseSqlServer(_config.GetConnectionString("DBLive"));
+            #elif Staging
+                  optionsBuilder.UseSqlServer(_config.GetConnectionString("DBStaging"));
+            #else
+                  optionsBuilder.UseSqlServer(_config.GetConnectionString("DBDevelopment"));
+            #endif
             optionsBuilder.EnableSensitiveDataLogging(true);
             this.Database.AutoTransactionsEnabled = true;
         }

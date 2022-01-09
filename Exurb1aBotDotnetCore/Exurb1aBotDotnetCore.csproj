@@ -9,15 +9,13 @@
     <Configurations>Debug;Release;Staging</Configurations>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Exurb1a.db" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Staging|AnyCPU'">
+    <DefineConstants>TRACE;Staging</DefineConstants>
+  </PropertyGroup>
 
-  <ItemGroup>
-    <Content Include="Exurb1a.db">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;Release</DefineConstants>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="2.4.0" />
