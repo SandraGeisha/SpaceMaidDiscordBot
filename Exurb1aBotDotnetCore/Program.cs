@@ -52,7 +52,13 @@ namespace Exurb1aBot {
             _client.ReactionAdded += ReactionAdded;
 
             _client.UserVoiceStateUpdated += UserVCUpdated;
-            await _client.LoginAsync(TokenType.Bot, _config.GetValue<string>("Tokens:Live"));
+            #if Release
+              await _client.LoginAsync(TokenType.Bot, _config.GetValue<string>("Tokens:Live"));
+            #elif Staging
+              await _client.LoginAsync(TokenType.Bot, _config.GetValue<string>("Tokens:Staging"));
+            #else
+              await _client.LoginAsync(TokenType.Bot, _config.GetValue<string>("Tokens:Development"));
+            #endif
             await _client.StartAsync();
             // Block this task until the program is closed.
             await Task.Delay(-1);
