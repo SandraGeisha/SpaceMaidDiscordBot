@@ -9,6 +9,10 @@ using System;
 using Exurb1aBot.Model.Domain;
 using Exurb1aBot.Model.ViewModel;
 using Exurb1aBotDotnetCore.Model.Exceptions;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+using System.IO;
+using Newtonsoft.Json.Linq;
 
 namespace Exurb1aBot.Modules {
     [Name("General Commands")]
@@ -17,39 +21,17 @@ namespace Exurb1aBot.Modules {
         //necessary for the View All Commands
         private readonly CommandService _cc;
         private readonly IScoreRepository _scoreRepo;
-        private readonly string[] Insults = new string[]{
-            "I do not consider {{name}} a vulture. I consider {{name}} something a vulture would eat.",
-            "People clap when they see {{name}}. They clap their hands over their eyes.",
-            "{{name}}'s face is proof that God has a sense of humour.",
-            "In the Lands of the Witless, {{name}} would be King.",
-            "I'd prefer a battle of wits, but {{name}} seems to be unarmed.",
-            "I regard {{name}} with an indifference bordering on aversion.",
-            "{{name}} is the reason God made the middle finger.",
-            "Sometimes I need what only {{name}} can provide, their absence.",
-            "{{name}}'s inferiority complex is fully justified.",
-            "{{name}} has delusions of adequacy.",
-            "If {{name}} had another brain, it would be lonely.",
-            "I'm not surprised {{name}} doesn't have children, {{name}} is a dead end of evolution.",
-            "Senpai will never notice {{name}}.",
-            "{{name}} is getting old and will never accomplish anything.",
-            "They stopped lobotimizing people for mental illnesses but when they examine {{name}} they might reconsider.",
-            "No I'm not insulting {{name}}, I'm describing {{name}}. Facts don't care about their feelings.",
-            "If I wanted to kill myself I'd climb {{name}}'s ego and jump to their IQ.",
-            "Brains aren't everything. In {{name}}'s case they're nothing.",
-            "{{name}} is an oxygen thief!",
-            "The last time I saw something like {{name}}, I flushed it.",
-            "I am busy now. Can I ignore you some other time?",
-            "{{name}} is the reason the gene pool needs a lifeguard.",
-            "If {{name}} really spoke their mind, {{name}} would be speechless.",
-            "As an outsider, what does {{name}} think of the human race?",
-            "So, a thought crossed {{name}}'s mind? Must have been a long and lonely journey."
-        };
+        private readonly IServiceProvider _serviceProvider;
+        private List<string> Insults = new List<string>();
+        private readonly string insultsFilename = "insults.json";
         #endregion
 
         #region Constructor
-        public BasicModule(CommandService cc, IScoreRepository scoreRepo) {
+        public BasicModule(CommandService cc, IScoreRepository scoreRepo, IServiceProvider serviceProvider) {
             _cc = cc;
             _scoreRepo = scoreRepo;
+            _serviceProvider = serviceProvider;
+            FillInsults();
         }
         #endregion
 
@@ -93,7 +75,8 @@ namespace Exurb1aBot.Modules {
         [Command("commands")]
         [Alias("c","help")]
         public async Task Commands([Remainder] string _ = "") {
-            await EmbedBuilderFunctions.GiveAllCommands(_cc, Context);
+            
+            await EmbedBuilderFunctions.GiveAllCommands(_cc, Context,_serviceProvider);
         }
         #endregion
 
@@ -110,14 +93,14 @@ namespace Exurb1aBot.Modules {
         [Command("insult")]
         public async Task Insult([Remainder] string s="") {
             await EmbedBuilderFunctions.GiveErrorSyntax("Insult", new string[] { "**name**(@ mention,required)" },
-                new string[] { $"{Program.prefix}Insult @Exurb1aBot#0069" }, Context);
+                new string[] { $"{Program.prefix}Insult @SpaceGeisha#2156" }, Context);
         }
 
         [Command("insult")]
         public async Task Insult(IGuildUser user) {
             Random r = new Random();
             if (!EasterInsultEggs(user)) {
-                var message = Insults[r.Next(0, Insults.Length)].Replace("{{name}}", user.Mention);
+                var message = Insults[r.Next(0, Insults.Count)].Replace("{{name}}", user.Mention);
                 await Context.Channel.SendMessageAsync(message);
             }
         }
@@ -153,9 +136,16 @@ namespace Exurb1aBot.Modules {
                 new string[] { $"{Program.prefix}qp Is the milk gone?" }, Context);
         }
 
-        #endregion
+    #endregion
 
-        #region private commands
+    #region private commands
+        private void FillInsults() {
+          if (File.Exists(insultsFilename)) {
+            JObject obj =JObject.Parse(File.ReadAllText(insultsFilename));
+            Insults = obj.GetValue("insults").Value<JArray>().ToObject<List<string>>();
+          }
+        }
+
         private bool EasterInsultEggs(IGuildUser user) {
             if (user.Id == Enums.SandraID) {
                 Context.Channel.SendMessageAsync("Why would I insult my owner? He's enough of a joke as it is.");

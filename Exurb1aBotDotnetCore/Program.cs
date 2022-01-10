@@ -179,7 +179,7 @@ namespace Exurb1aBot {
         }
 
         private async Task ListCommands(ICommandContext context) {
-            await EmbedBuilderFunctions.GiveAllCommands(_commands,context,"Unkown Command");
+            await EmbedBuilderFunctions.GiveAllCommands(_commands,context,_services,"Unkown Command");
         }
 
         private async Task NoPermission(string reason, ISocketMessageChannel channel) {
