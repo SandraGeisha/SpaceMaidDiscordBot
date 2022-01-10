@@ -17,6 +17,7 @@ namespace Exurb1aBot.Modules {
         //necessary for the View All Commands
         private readonly CommandService _cc;
         private readonly IScoreRepository _scoreRepo;
+        private readonly IServiceProvider _serviceProvider;
         private readonly string[] Insults = new string[]{
             "I do not consider {{name}} a vulture. I consider {{name}} something a vulture would eat.",
             "People clap when they see {{name}}. They clap their hands over their eyes.",
@@ -47,9 +48,10 @@ namespace Exurb1aBot.Modules {
         #endregion
 
         #region Constructor
-        public BasicModule(CommandService cc, IScoreRepository scoreRepo) {
+        public BasicModule(CommandService cc, IScoreRepository scoreRepo, IServiceProvider serviceProvider) {
             _cc = cc;
             _scoreRepo = scoreRepo;
+            _serviceProvider = serviceProvider;
         }
         #endregion
 
@@ -93,7 +95,8 @@ namespace Exurb1aBot.Modules {
         [Command("commands")]
         [Alias("c","help")]
         public async Task Commands([Remainder] string _ = "") {
-            await EmbedBuilderFunctions.GiveAllCommands(_cc, Context);
+            
+            await EmbedBuilderFunctions.GiveAllCommands(_cc, Context,_serviceProvider);
         }
         #endregion
 

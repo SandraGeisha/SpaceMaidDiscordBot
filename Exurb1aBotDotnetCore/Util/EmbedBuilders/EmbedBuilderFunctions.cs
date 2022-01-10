@@ -12,7 +12,7 @@ namespace Exurb1aBot.Util.EmbedBuilders {
     public static class EmbedBuilderFunctions {
         private static EmbedFooterBuilder embf = new EmbedFooterBuilder();
 
-        public static async Task GiveAllCommands(CommandService _commands, ICommandContext context, string ErrorReason = null) {
+        public static async Task GiveAllCommands(CommandService _commands, ICommandContext context, IServiceProvider serviceProvider,string ErrorReason = null) {
             IEnumerable<ModuleInfo> modInfo = _commands.Modules;
             EmbedBuilder ebm = new EmbedBuilder();
 
@@ -26,9 +26,9 @@ namespace Exurb1aBot.Util.EmbedBuilders {
             }
 
             ebm.WithDescription("List of all available commands:");
-
             foreach (ModuleInfo mi in modInfo) {
-                ebm.AddField(mi.Name, String.Join(", ", mi.Commands.Select(mx => mx.Name).Where(name=>name.Trim().Length!=0).Distinct().ToArray()));
+                if(CheckPreconditions(mi, context, serviceProvider))
+                  ebm.AddField(mi.Name, String.Join(", ", mi.Commands.Select(mx => mx.Name).Where(name=>name.Trim().Length!=0).Distinct().ToArray()));
             }
 
             ebm.WithFooter(AddFooter(context).Result);
@@ -57,8 +57,12 @@ namespace Exurb1aBot.Util.EmbedBuilders {
 
         public async static Task<EmbedFooterBuilder> AddFooter(ICommandContext context) {
             IGuildUser user = await context.Guild.GetUserAsync((ulong)401452008957280257);
-            embf.WithIconUrl(user.GetAvatarUrl());
-            embf.Text = $"Made by {user.Nickname??user.Username}";
+            if (user != null) {
+              embf.WithIconUrl(user.GetAvatarUrl());
+              embf.Text = $"Made by {user.Nickname ?? user.Username}";
+            } else {
+              embf.Text = $"Made by Sandra#0069";
+            }
             return embf;
         }
 
@@ -129,6 +133,16 @@ namespace Exurb1aBot.Util.EmbedBuilders {
             };
             await channel.SendMessageAsync(embed: builder.Build());
         }
+        private static bool CheckPreconditions(ModuleInfo mi, ICommandContext context, IServiceProvider provider) {
+      if (mi.Preconditions.Any()) {
+        bool result = false;
+        foreach (var precondition in mi.Preconditions) {
+                result = result || precondition.CheckPermissionsAsync(context, mi.Commands.First(), provider).Result.IsSuccess;
+                return result;              
+              }
+            }
 
+            return true;
+        }
     }
 }
