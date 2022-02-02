@@ -13,16 +13,18 @@ namespace Exurb1aBot.Model.Domain {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; protected set; }
         public ulong msgId { get; set; }
+        public Int64 GuildQuoteID { get; set; }
         public EntityUser Creator { get; private set; }
         public EntityUser Qoutee { get; private set; }
         public DateTime Time { get; private set; }
+        public Server Guild { get; set; }
 
         public IGuild _context { get; private set; }
 
         //used by entity framework
         protected Quote() {}
 
-        public Quote(string text,EntityUser Creator,EntityUser Quotee,DateTime dateTime, IGuild context) {
+        public Quote(string text,EntityUser Creator,EntityUser Quotee,DateTime dateTime, IGuild context, Server server, Int64 quoteId) {
             _context = context;
 
             if (text == null || text.Trim().Length == 0)
@@ -48,6 +50,8 @@ namespace Exurb1aBot.Model.Domain {
             this.Qoutee = Quotee;
             this.Creator = Creator;
             this.Time = dateTime;
+            this.Guild = server;
+            this.GuildQuoteID = quoteId;
         }
 
         private async Task<string[]> getTextRoleOrUsername(string[] mentions) {

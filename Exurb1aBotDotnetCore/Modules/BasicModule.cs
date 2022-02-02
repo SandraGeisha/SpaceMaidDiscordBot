@@ -53,13 +53,12 @@ namespace Exurb1aBot.Modules {
 
         [Command("rank")]
         public async Task Rank(IGuildUser user, [Remainder] string _ = "") {
-            if (!_scoreRepo.HasScore(user))
+            if (!_scoreRepo.HasScore(user, Context.Guild.Id))
                 throw new UserHasNoScoreException();
 
             RankingModel rm = new RankingModel() {
-                CreatedRank = _scoreRepo.GiveRankUser(user, Enums.ScoreType.Qouter),
-                QuoteRank = _scoreRepo.GiveRankUser(user, Enums.ScoreType.Qouted),
-                VCRank = _scoreRepo.GiveRankUser(user, Enums.ScoreType.VC)
+                CreatedRank = _scoreRepo.GiveRankUser(user, Enums.ScoreType.Qouter,Context.Guild.Id),
+                QuoteRank = _scoreRepo.GiveRankUser(user, Enums.ScoreType.Qouted, Context.Guild.Id)
             };
 
             EmbedBuilder emb = await RankEmbedBuilder.BuildRank(Context, rm, user);
@@ -68,7 +67,8 @@ namespace Exurb1aBot.Modules {
 
         [Command("rank")]
         public async Task Rank([Remainder] string _ = "") {
-            await Rank(Context.Message.Author as IGuildUser);
+            IGuildUser user = Context.Message.Author as IGuildUser;
+            await Rank(user);
         }
 
         #region View all commands

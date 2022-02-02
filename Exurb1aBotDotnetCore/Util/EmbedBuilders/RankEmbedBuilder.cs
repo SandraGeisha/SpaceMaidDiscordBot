@@ -22,23 +22,18 @@ namespace Exurb1aBot.Util.EmbedBuilders {
 
             builder.AddField("Qouted Ranking", $"#{ranking.QuoteRank}", true);
             builder.AddField("Quotes Created Ranking", $"#{ranking.CreatedRank}", true);
-            builder.AddField("Voice Ranking", $"#{ranking.VCRank}", false);
 
             return builder;
         }
 
         public async static Task<EmbedBuilder> BuildRankEmbed(ICommandContext context,Scores[] scores, EntityUser[] users, int page, Enums.ScoreType type) {
-            string title = $"Oreocafé Ranking: Times Quoted- page {page+1}";
+            string title = $"Server Ranking: Times Quoted- page {page+1}";
             string status = "Quotes";
 
             switch (type) {
                 case Enums.ScoreType.Qouter:
-                    title = $"Oreocafé Ranking: Quotes Created - page {page + 1}";
+                    title = $"Server Ranking: Quotes Created - page {page + 1}";
                     status = "Quotes created";
-                    break;
-                case Enums.ScoreType.VC:
-                    title = $"Oreocafé Ranking: VC Score- page {page + 1}";
-                    status = "Points";
                     break;
             }
 
@@ -54,9 +49,6 @@ namespace Exurb1aBot.Util.EmbedBuilders {
                 switch (type) {
                     case Enums.ScoreType.Qouter:
                         s = score.Quotes_Created;
-                        break;
-                    case Enums.ScoreType.VC:
-                        s = score.VC_Score;
                         break;
                 }
 

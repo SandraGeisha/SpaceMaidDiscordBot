@@ -40,9 +40,14 @@ namespace Exurb1aBot.Modules {
 
         [Command("quotes")]
         public async Task GiveTopQoutes(int page = 0, [Remainder] string s = "") {
-            page = SanitizePage(page);
+            if (_scoreRepo.GiveAmountOfScores(Context.Guild.Id) == 0) {
+              Context.Channel.SendMessageAsync("There are no scores to display");
+              return;
+            }
+
+            page = SanitizePage(page, Context.Guild.Id);
             
-            Scores[] scores = _scoreRepo.GiveTopNScores(page * _pageAmount, (page + 1) * _pageAmount, Enums.ScoreType.Qouted);
+            Scores[] scores = _scoreRepo.GiveTopNScores(page * _pageAmount, (page + 1) * _pageAmount, Enums.ScoreType.Qouted, Context.Guild.Id);
             List<EntityUser> users = GetUsers(scores);
 
             EmbedBuilder emb = await RankEmbedBuilder.BuildRankEmbed(Context, scores, users.ToArray(), page, Enums.ScoreType.Qouted);
@@ -54,27 +59,15 @@ namespace Exurb1aBot.Modules {
             await GiveTopCreatedQoutes(0, s);
         }
 
-        [Command("vc")]
-        public async Task GiveTopVCRank([Remainder] string s = "") {
-            await GiveTopVCRank(0, s);
-        }
-        
-        [Command("vc")]
-        public async Task GiveTopVCRank(int page = 0, [Remainder] string s = "") {
-            page = SanitizePage(page);
-
-            Scores[] scores = _scoreRepo.GiveTopNScores(page * _pageAmount, (page + 1) * _pageAmount, Enums.ScoreType.VC);
-            List<EntityUser> users = GetUsers(scores);
-
-            EmbedBuilder emb = await RankEmbedBuilder.BuildRankEmbed(Context, scores, users.ToArray(), page, Enums.ScoreType.VC);
-            await Context.Channel.SendMessageAsync(embed: emb.Build());
-        }
-
         [Command("created")]
         public async Task GiveTopCreatedQoutes(int page = 0, [Remainder] string s = "") {
-            page = SanitizePage(page);
+          if (_scoreRepo.GiveAmountOfScores(Context.Guild.Id) == 0) {
+            Context.Channel.SendMessageAsync("There are no scores to display");
+            return;
+          }
+          page = SanitizePage(page,Context.Guild.Id);
 
-            Scores[] scores = _scoreRepo.GiveTopNScores(page * _pageAmount, (page + 1) * _pageAmount, Enums.ScoreType.Qouter);
+            Scores[] scores = _scoreRepo.GiveTopNScores(page * _pageAmount, (page + 1) * _pageAmount, Enums.ScoreType.Qouter, Context.Guild.Id);
             List<EntityUser> users = GetUsers(scores);
 
             EmbedBuilder emb = await RankEmbedBuilder.BuildRankEmbed(Context, scores, users.ToArray(), page, Enums.ScoreType.Qouter);
@@ -92,14 +85,14 @@ namespace Exurb1aBot.Modules {
             return users;
         }
 
-        private int SanitizePage(int page) {
+        private int SanitizePage(int page, ulong serverId) {
             if (page > 0)
                 page -= 1;
 
             if (page < 0)
                 page = 0;
 
-            int maxPage = _scoreRepo.GiveAmountOfScores() / _pageAmount;
+            int maxPage = _scoreRepo.GiveAmountOfScores(serverId) / _pageAmount;
 
             if (page > maxPage)
                 page = maxPage;

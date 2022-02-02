@@ -4,6 +4,9 @@ using Exurb1aBot.Model.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
+using System;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace Exurb1aBot.Data {
     public class ApplicationDbContext : DbContext {
@@ -12,6 +15,7 @@ namespace Exurb1aBot.Data {
         public DbSet<EntityUser> Users { get; set; }
         public DbSet<Location> Location { get; set; }
         public DbSet<Scores> Scores { get; set; }
+        public DbSet<Server> Servers { get; set; }
 
         private readonly IConfiguration _config;
 
@@ -19,7 +23,8 @@ namespace Exurb1aBot.Data {
           _config = configuration;
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
             #if Release
                   optionsBuilder.UseSqlServer(_config.GetConnectionString("DBLive"));
             #elif Staging
@@ -36,7 +41,8 @@ namespace Exurb1aBot.Data {
             modelBuilder.ApplyConfiguration<EntityUser>(new EntityUserMapper())
                   .ApplyConfiguration<Quote>(new QuoteMapper())
                   .ApplyConfiguration<Location>(new LocationMapper())
-                  .ApplyConfiguration<Scores>(new ScoreMapper());
+                  .ApplyConfiguration<Scores>(new ScoreMapper())
+                  .ApplyConfiguration<Server>(new ServerMapper());
         }
 
         public void Initialize() {
@@ -44,6 +50,7 @@ namespace Exurb1aBot.Data {
             Users.Load();
             Location.Load();
             Scores.Load();
+            Servers.Load();
         }
     }
 }

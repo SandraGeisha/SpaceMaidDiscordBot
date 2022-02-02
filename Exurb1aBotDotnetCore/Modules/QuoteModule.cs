@@ -20,15 +20,17 @@ namespace Exurb1aBot.Modules {
         private readonly IUserRepository _userRepo;
         private IQouteRepository _qouteRepo;
         private readonly IScoreRepository _scoreRepo;
+        private readonly IServerRepository _serverRepo;
         public static Dictionary<ulong,Quote> _trackedQuoteList = new Dictionary<ulong, Quote>();
-        #endregion
+    #endregion
 
-        #region Constructor
-        public QuoteModule(IQouteRepository quoteRepo, IUserRepository userRepository, IScoreRepository scoreRepo) {
+    #region Constructor
+          public QuoteModule(IQouteRepository quoteRepo, IUserRepository userRepository, IScoreRepository scoreRepo, IServerRepository serverRepo) {
             _qouteRepo = quoteRepo;
             _userRepo = userRepository;
             _scoreRepo = scoreRepo;
-        } 
+            _serverRepo = serverRepo;    
+          } 
         #endregion
 
         #region No input
@@ -78,6 +80,12 @@ namespace Exurb1aBot.Modules {
         public async Task AddQuote(string quote, IGuildUser user) {
             IGuildUser cr = Context.Message.Author as IGuildUser;
 
+            Server server = _serverRepo.GetById(Context.Guild.Id);
+            if (server == null) {
+              server = new Server() { ID = Context.Guild.Id };
+              _serverRepo.Add(server);
+            }
+
             EntityUser creator = _userRepo.GetUserById(cr.Id);
 
             if (creator == null) {
@@ -98,22 +106,28 @@ namespace Exurb1aBot.Modules {
             }
 
 
-            Quote q = new Quote(quote.Replace("`","'"), creator, quotee, DateTime.Now,Context.Guild);
+            Quote q = new Quote(quote.Replace("`","'"), creator, quotee, DateTime.Now,Context.Guild, server, _qouteRepo.GetMissingQuoteID(server.ID));
 
             _qouteRepo.AddQuote(q);
             _qouteRepo.SaveChanges();
 
-            _scoreRepo.Increment(cr, ScoreType.Qouter);
-            _scoreRepo.Increment(user, ScoreType.Qouted);
+            _scoreRepo.Increment(cr, ScoreType.Qouter, Context.Guild.Id);
+            _scoreRepo.Increment(user, ScoreType.Qouted, Context.Guild.Id);
 
-            int id = _qouteRepo.GetId(q);
+            long id = _qouteRepo.GetId(q);
             await Context.Channel.SendMessageAsync($"added quote **{q.QuoteText.RemoveAbuseCharacters()}** from" +
                 $" **{user.Nickname ??user.Username}**  quoted by **{cr.Nickname ?? cr.Username}** with id {id}");
 
         }
 
-        public static async Task BotAddQuote(IQouteRepository _quoteRepo, IScoreRepository _scoreRepo,IUserRepository _userRepo ,IMessageChannel channel,string quote,ulong msgId, IGuildUser creator, IGuildUser quotee,DateTime time) {
-            if (!_quoteRepo.MessageExists(quote,quotee,time)) {
+        public static async Task BotAddQuote(IQouteRepository _quoteRepo, IScoreRepository _scoreRepo,IUserRepository _userRepo, IServerRepository _serverRepo,IMessageChannel channel,string quote,ulong msgId, IGuildUser creator, IGuildUser quotee,DateTime time, ulong guildId) {
+            if (!_quoteRepo.MessageExists(quote,quotee,time,guildId)) {
+                Server server = _serverRepo.GetById(guildId);
+                if (server == null) {
+                  server = new Server() { ID = guildId };
+                  _serverRepo.Add(server);
+                }
+
 
                 EntityUser cr = _userRepo.GetUserById(creator.Id);
 
@@ -134,17 +148,17 @@ namespace Exurb1aBot.Modules {
                     return;
                 }
 
-                Quote q = new Quote(quote, cr, quotee2, time,creator.Guild) {
+                Quote q = new Quote(quote, cr, quotee2, time,creator.Guild, server, _quoteRepo.GetMissingQuoteID(guildId)) {
                     msgId = msgId
                 };
 
                 _quoteRepo.AddQuote(q);
                 _quoteRepo.SaveChanges();
 
-                _scoreRepo.Increment(creator, ScoreType.Qouter);
-                _scoreRepo.Increment(quotee, ScoreType.Qouted);
+                _scoreRepo.Increment(creator, ScoreType.Qouter, guildId);
+                _scoreRepo.Increment(quotee, ScoreType.Qouted,guildId);
 
-                int id = _quoteRepo.GetId(q);
+                long id = _quoteRepo.GetId(q);
                 await channel.SendMessageAsync($"added quote **{q.QuoteText.RemoveAbuseCharacters()}**" +
                     $" from **{quotee.Nickname ?? quotee.Username}** quoted by **{creator.Nickname ?? creator.Username}** " +
                     $"with id {id}");
@@ -155,7 +169,7 @@ namespace Exurb1aBot.Modules {
         #region Random
         [Command("random")]
         public async Task GetRandomQuote() {
-            Quote q = _qouteRepo.GetRandom();
+            Quote q = _qouteRepo.GetRandom(Context.Guild.Id);
             IGuildUser[] users = await GetGuildUsers(q);
             await EmbedBuilderFunctions.DisplayQuote(q, users, Context);
         }
@@ -179,7 +193,7 @@ namespace Exurb1aBot.Modules {
         [Command("user")]
         public async Task GetRandomQuoteUser(IGuildUser user) {
             EntityUser user2 = await GetUser(user.Id);
-            Quote q = _qouteRepo.GetRandomByUser(user2.Id);
+            Quote q = _qouteRepo.GetRandomByUser(user2.Id, Context.Guild.Id);
             await EmbedBuilderFunctions.DisplayQuote(q, GetGuildUsers(q).Result, Context);
         }
 
@@ -201,7 +215,7 @@ namespace Exurb1aBot.Modules {
         public async Task GetQuote(string qId) {
             string qfid = qId.Replace("#", "");
             if (Int32.TryParse(qfid, out int j)) {
-                Quote q = _qouteRepo.GetQuoteById(j);
+                Quote q = _qouteRepo.GetQuoteById(j, Context.Guild.Id);
                 await EmbedBuilderFunctions.DisplayQuote(q, GetGuildUsers(q).Result, Context);
             }
             else
@@ -225,7 +239,7 @@ namespace Exurb1aBot.Modules {
         [Command("remove")]
         public async Task RemoveQuote(int id) {
             var Author = Context.Message.Author as IGuildUser;
-            Quote q = _qouteRepo.GetQuoteById(id);
+            Quote q = _qouteRepo.GetQuoteById(id, Context.Guild.Id);
 
             if (q == null)
                 throw new QouteNotFound();
@@ -236,13 +250,13 @@ namespace Exurb1aBot.Modules {
                 IGuildUser quotee = users[0];
                 IGuildUser quoter = users[1];
 
-                _qouteRepo.RemoveQuote(id);
-                _scoreRepo.Decrement(quotee, ScoreType.Qouted);
-                _scoreRepo.Decrement(quoter, ScoreType.Qouter);
+                _qouteRepo.RemoveQuote(id, Context.Guild.Id);
+                _scoreRepo.Decrement(quotee, ScoreType.Qouted, Context.Guild.Id);
+                _scoreRepo.Decrement(quoter, ScoreType.Qouter, Context.Guild.Id);
 
                 _qouteRepo.SaveChanges();
 
-                await Context.Channel.SendMessageAsync($"Quote {q.Id} \"{q.QuoteText.RemoveAbuseCharacters()}\" by {quotee.Nickname??quotee.Username} deleted");
+                await Context.Channel.SendMessageAsync($"Quote {q.GuildQuoteID} \"{q.QuoteText.RemoveAbuseCharacters()}\" by {quotee.Nickname??quotee.Username} deleted");
             }
             else
                 await Context.Channel.SendMessageAsync("You can't delete someone elses quotes");
@@ -255,20 +269,6 @@ namespace Exurb1aBot.Modules {
                 new string[] { $"{Program.prefix}quote remove 5 " }, Context);
         }
         #endregion
-
-        //[Command("purge")]
-        //public async Task PurgeByUser() {
-        //    IEnumerable<Quote> quotes = _qouteRepo.GetAll();
-
-        //    IEmote cross = new Emoji("❌");
-        //    IEmote check = new Emoji("✅");
-
-        //    foreach (Quote q in quotes.Take(10)) {
-        //        IUserMessage message = await EmbedBuilderFunctions.DisplayQuote(q, GetGuildUsers(q).Result, Context);
-        //        await message.AddReactionsAsync(new IEmote[] { cross, check });
-        //        _trackedQuoteList.Add(message.Id,q);
-        //    }
-        //}
 
         #region Helping functions
         private async Task<IGuildUser[]> GetGuildUsers(Quote q) {

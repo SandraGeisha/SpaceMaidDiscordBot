@@ -89,7 +89,7 @@ namespace Exurb1aBot.Util.EmbedBuilders {
             };
 
             IGuildUser quotee = users[0];
-            ebm.WithTitle($"Quote #{q.Id} by {(quotee == null ? q.Qoutee.Username : (quotee.Nickname??quotee.Username))}");
+            ebm.WithTitle($"Quote #{q.GuildQuoteID} by {(quotee == null ? q.Qoutee.Username : (quotee.Nickname??quotee.Username))}");
 
             if (quotee != null) 
                 ebm.WithThumbnailUrl(quotee.GetAvatarUrl());
