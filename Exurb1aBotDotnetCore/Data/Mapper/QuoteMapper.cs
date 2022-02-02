@@ -18,6 +18,8 @@ namespace Exurb1aBot.Data.Mapper {
 
             builder.HasOne(q => q.Creator).WithMany().IsRequired().OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasOne(q => q.Guild).WithMany().IsRequired().OnDelete(DeleteBehavior.Cascade);
+
             builder.Property(q => q.QuoteText).HasMaxLength(100).IsRequired();
 
             builder.Property(q => q.msgId).HasMaxLength(100).HasDefaultValue(0);

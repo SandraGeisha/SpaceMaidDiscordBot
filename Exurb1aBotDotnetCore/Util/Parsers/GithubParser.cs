@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Exurb1aBot.Util.Parsers {
     class GithubParser {
-        private const string requestUrl = "https://api.github.com/repos/SandraGeisha/Exurb1aBot";
+        private const string requestUrl = "https://api.github.com/repos/SandraGeisha/SpaceMaidDiscordBot";
 
         public static GithubModel GetModel() {
             ApiHelper.InitializeClient();

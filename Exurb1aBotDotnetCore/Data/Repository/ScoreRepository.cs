@@ -11,54 +11,54 @@ namespace Exurb1aBot.Data.Repository {
         private readonly ApplicationDbContext _context;
         private readonly DbSet<Scores> _scoreDbSet;
         private readonly IUserRepository _userRepo;
+        private readonly IServerRepository _serverRepo;
         #endregion
 
         #region Constructor
-        public ScoreRepository(ApplicationDbContext context,IUserRepository userRepository) {
+        public ScoreRepository(ApplicationDbContext context,IUserRepository userRepository, IServerRepository serverRepo) {
             _context = context;
             _scoreDbSet = context.Scores;
             _userRepo = userRepository;
+            _serverRepo = serverRepo;
         }
         #endregion
 
         #region Interface methods
-        public int GetScore(IUser user, Enums.ScoreType type) {
-            if (HasScore(user)) {
-                Scores score = GetScoreByUser(user);
+        public int GetScore(IUser user, Enums.ScoreType type, ulong serverId) {
+            if (HasScore(user,serverId)) {
+                Scores score = GetScoreByUser(user,serverId);
 
                 switch (type) {
                     case Enums.ScoreType.Qouted:
                         return score.Quoted;
                     case Enums.ScoreType.Qouter:
                         return score.Quotes_Created;
-                    case Enums.ScoreType.VC:
-                        return score.VC_Score;
                 }
             }
 
             return 0;
         }
 
-        public Scores GetScoreByUser(IUser user) {
-            return _scoreDbSet.FirstOrDefault(s => s.Id.Equals(user.Id));
+        public Scores GetScoreByUser(IUser user, ulong serverId) {
+            return _scoreDbSet.FirstOrDefault(s => s.Id.Equals(user.Id) && s.Server.ID == serverId);
         }
 
-        public Scores[] GiveTopNScores(int start, int end, Enums.ScoreType type) {
-            List<Scores> scores = GiveScoresOrderedBy(type);
+        public Scores[] GiveTopNScores(int start, int end, Enums.ScoreType type, ulong serverId) {
+            List<Scores> scores = GiveScoresOrderedBy(type,serverId);
             return scores.Skip(start).Take(end - start).ToArray();
         }
 
-        public int GiveRankUser(IUser user, Enums.ScoreType type) {
-            List<Scores> scores = GiveScoresOrderedBy(type);
+        public int GiveRankUser(IUser user, Enums.ScoreType type, ulong serverId) {
+            List<Scores> scores = GiveScoresOrderedBy(type,serverId);
             return scores.IndexOf(scores.FirstOrDefault(s => s.Id.Equals(user.Id))) + 1;
         }
 
-        public bool HasScore(IUser user) {
-            return _scoreDbSet.Any(s => s.Id.Equals(user.Id));
+        public bool HasScore(IUser user, ulong serverId) {
+            return _scoreDbSet.Any(s => s.Id.Equals(user.Id) && s.Server.ID == serverId);
         }
 
-        public void Increment(IUser user, Enums.ScoreType type, int val = 1) {
-            bool hasScore = HasScore(user);
+        public void Increment(IUser user, Enums.ScoreType type, ulong serverId, int val = 1) {
+            bool hasScore = HasScore(user,serverId);
 
             EntityUser eu = _userRepo.GetUserById(user.Id);
 
@@ -67,11 +67,17 @@ namespace Exurb1aBot.Data.Repository {
                 _userRepo.AddUser(eu);
             }
 
-            Scores score = hasScore ? GetScoreByUser(user) : new Scores() {
+            Server server = _serverRepo.GetById(serverId);
+            if (server == null) {
+              server = new Server() { ID = serverId };
+              _serverRepo.Add(server);
+            }
+
+            Scores score = hasScore ? GetScoreByUser(user,serverId) : new Scores() {
                 Id = user.Id,
                 Quoted = 0,
                 Quotes_Created = 0,
-                VC_Score = 0
+                Server = server
             };
 
             switch (type) {
@@ -80,9 +86,6 @@ namespace Exurb1aBot.Data.Repository {
                     break;
                 case Enums.ScoreType.Qouter:
                     score.Quotes_Created += val;
-                    break;
-                case Enums.ScoreType.VC:
-                    score.VC_Score += val;
                     break;
             }
 
@@ -94,48 +97,44 @@ namespace Exurb1aBot.Data.Repository {
         #endregion
 
         #region Private helper methods
-        private List<Scores> GiveScoresOrderedBy(Enums.ScoreType type) {
-            List<Scores> scores = _scoreDbSet.ToList();
+        private List<Scores> GiveScoresOrderedBy(Enums.ScoreType type, ulong serverId) {
+            IEnumerable<Scores> scores = _scoreDbSet.ToList().Where(s => s.Server.ID == serverId).ToList();
+
             switch (type) {
                 case Enums.ScoreType.Qouted:
-                    scores = scores.OrderBy(s => s.Quoted).ToList();
+                    scores = scores.OrderBy(s => s.Quoted);
                     break;
                 case Enums.ScoreType.Qouter:
-                    scores = scores.OrderBy(s => s.Quotes_Created).ToList();
-                    break;
-                case Enums.ScoreType.VC:
-                    scores = scores.OrderBy(s => s.VC_Score).ToList();
+                    scores = scores.OrderBy(s => s.Quotes_Created);
                     break;
             }
 
-            scores.Reverse();
-            return scores;
+            return scores.Reverse().ToList();
         }
 
-        public int GiveAmountOfScores() {
-            return _scoreDbSet.Count();
+        public int GiveAmountOfScores(ulong serverId) {
+            return _scoreDbSet.ToList()
+                .Where(s=>s.Server.ID == serverId).Count();
         }
 
-        public void Decrement(IUser user, Enums.ScoreType type, int val = 1) {
-            if (!HasScore(user))
+        public void Decrement(IUser user, Enums.ScoreType type, ulong serverId, int val = 1) {
+            if (!HasScore(user,serverId))
                 throw new System.Exception("The fuck?");
 
-            Scores s = GetScoreByUser(user);
+            Scores s = GetScoreByUser(user,serverId);
             
             switch (type) {
                 case Enums.ScoreType.Qouted:
                     s.Quoted -= val;
                     break;
-                case Enums.ScoreType.Qouter:
+                default:
                     s.Quotes_Created -= val;
                     break;
-                default:
-                    s.VC_Score -= val;
-                    break;
-            }
+      }
 
             _context.SaveChanges();
         }
-        #endregion
-    }
+
+    #endregion
+  }
 }
