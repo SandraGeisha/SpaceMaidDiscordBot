@@ -8,8 +8,7 @@
 
         public enum ScoreType {
             Qouted,
-            Qouter,
-            VC
+            Qouter
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Exurb1aBot.Util.Permissions {
                 return Task.FromResult(PreconditionResult.FromSuccess());
             }
 
-            return Task.FromResult(PreconditionResult.FromError("You're not sandra"));
+            return Task.FromResult(PreconditionResult.FromError("Only developers can do these actions"));
         }
     }
 }

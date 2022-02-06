@@ -6,6 +6,8 @@ using System;
 using Exurb1aBot.Model.Exceptions.QuoteExceptions;
 using Discord;
 using Exurb1aBot.Util.Extensions;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace Exurb1aBot.Data.Repository {
     class QouteRepository : IQouteRepository {
@@ -22,20 +24,14 @@ namespace Exurb1aBot.Data.Repository {
             Quotes.Add(quote);
         }
 
-        public IEnumerable<Quote> GetAllByUser(ulong id) {
-            return Quotes.Where(q => q.Qoutee.Id == id).OrderBy(q => q.Time).Reverse();
+        private int GetCountUser(ulong id, ulong serverId) {
+            return Quotes.Where(q => 
+              q.Qoutee.Id == id && q.Guild.ID == serverId
+            ).Count();
         }
 
-        private int GetCount() {
-            return Quotes.Count();
-        }
-
-        private int GetCountUser(ulong id) {
-            return Quotes.Where(q => q.Qoutee.Id == id).Count();
-        }
-
-        public Quote GetQuoteById(int id) {
-            Quote q = Quotes.FirstOrDefault(qu => qu.Id == id);
+        public Quote GetQuoteById(int id, ulong serverID) {
+            Quote q = Quotes.FirstOrDefault(qu => qu.GuildQuoteID == id && qu.Guild.ID == serverID);
 
             if (q == null)
                 throw new QouteNotFound();
@@ -43,48 +39,75 @@ namespace Exurb1aBot.Data.Repository {
             return q;
         }
 
-        public Quote GetRandom() {
-
-            if (GetCount() == 0)
+        public Quote GetRandom(ulong ServerID) {
+            var quotes = GetAllByServer(ServerID);
+            if (!quotes.Any())
                 throw new NoQuotesException();
 
-            int r = rand.Next(GetCount());
-            return Quotes.ToList()[r];
+            int r = rand.Next(quotes.Count());
+            return quotes.ToList()[r];
         }
-        public Quote GetRandomByUser(ulong id) {
-            if (GetCountUser(id) == 0)
-                throw new NoQuoteFoundException();
+        public Quote GetRandomByUser(ulong id, ulong serverID) {
+          int count = GetCountUser(id, serverID);
 
-            int r = rand.Next(GetCountUser(id));
-            return Quotes.Where(q => q.Qoutee.Id == id).ToList()[r];
+          if (count > 0) {
+            int r = rand.Next(GetCountUser(id, serverID));
+            return Quotes.Where(q => q.Qoutee.Id == id && q.Guild.ID == serverID).ToList()[r];
+          }
+
+          throw new NoQuoteFoundException();
+
         }
 
 
-        public void RemoveQuote(int id) {
-            Quotes.Remove(GetQuoteById(id));
+        public void RemoveQuote(int id, ulong serverId) {
+            Quotes.Remove(GetQuoteById(id, serverId));
         }
 
         public void SaveChanges() {
             _context.SaveChanges();
         }
 
-        public int GetId(Quote q) {
+        public long GetId(Quote q) {
             Quote quote = Quotes.AsNoTracking().FirstOrDefault(qu => qu.Equals(q));
-            int id = quote.Id;
+            long id = quote.GuildQuoteID;
             return id;
         }
 
-        public bool MessageExists(string text, IGuildUser user, DateTime time) {
+        public bool MessageExists(string text, IGuildUser user, DateTime time, ulong serverId) {
 
             return Quotes.Where(q =>
                      q.QuoteText == text && q.Qoutee.Id == user.Id
-                     && q.Time == time
+                     && q.Time == time && q.Guild.ID == serverId
                     ).Count() >= 1;
 
         }
 
-        public IEnumerable<Quote> GetAll() {
-            return Quotes.ToList();
-        }
+
+    public IEnumerable<Quote> GetAllByServer(ulong serverId) {
+      return Quotes.ToList().Where(q => q.Guild != null && q.Guild.ID == serverId);
     }
+
+    public Int64 GetMissingQuoteID(ulong serverId) {
+      var output = new SqlParameter
+      {
+        ParameterName = "outputBit",
+        SqlDbType = SqlDbType.BigInt,
+        Direction = ParameterDirection.Output
+      };
+
+      SqlParameter[] parameters ={
+        new SqlParameter{
+          ParameterName = "serverId", 
+          Value = serverId ,
+          SqlDbType = SqlDbType.Decimal
+        },
+        output
+      };
+
+      _context.Database.ExecuteSqlRaw("Exec GetMissingID @serverId, @outputBit OUTPUT", parameters);
+      _context.Database.ExecuteSqlRaw("EXEC sp_recompile N'GetMissingID';");
+      return (Int64)output.Value;
+    }
+  }
 }

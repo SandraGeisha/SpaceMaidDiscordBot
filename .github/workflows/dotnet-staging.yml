@@ -35,7 +35,7 @@ jobs:
           username: 'root'
           server: '${{ secrets.SERVER_IP }}'
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          local_path: './Exurb1aBotDotnetCore/bin/Release/net5.0/linux-x64/publish'
+          local_path: './Exurb1aBotDotnetCore/bin/Staging/net5.0/linux-x64/publish'
           remote_path: '/home/sandra/github/staging'
           args: '-o ConnectTimeout=5'
     - name: Replace Environment variables

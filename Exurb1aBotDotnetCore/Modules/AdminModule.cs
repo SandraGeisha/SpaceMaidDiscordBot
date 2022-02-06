@@ -4,11 +4,11 @@ using Exurb1aBot.Util.EmbedBuilders;
 using System;
 using System.Threading.Tasks;
 using Exurb1aBot.Util.Permissions;
+using Discord.WebSocket;
 
 namespace Exurb1aBot.Modules {
     [Name("Admin Commands")]
-    [RequireUserPermission(ChannelPermission.ManageMessages, Group = "perms")]
-    [RequireSandra(Group = "perms")]
+    [RequireSandra]
     public class AdminModule : ModuleBase<SocketCommandContext> {
 
         #region Shutdown Command
@@ -37,26 +37,28 @@ namespace Exurb1aBot.Modules {
         #region Nickname
         [Command("nickname")]
         public async Task ChangeNick(string name) {
-            IGuildUser user = Context.Guild.GetUser(Context.Client.CurrentUser.Id) as IGuildUser;
+            var guilds = Context.Client.Guilds;
+            foreach (SocketGuild guild in guilds) {
+              IGuildUser user = guild.GetUser(Context.Client.CurrentUser.Id) as IGuildUser;
 
-            if (user.GuildPermissions.ChangeNickname) {
-                await user.ModifyAsync(u => u.Nickname = name, RequestOptions.Default);
-                return;
+              if (user.GuildPermissions.ChangeNickname) {
+                  await user.ModifyAsync(u => u.Nickname = name, RequestOptions.Default);
+              }
             }
-
-            await Context.Message.Channel.SendMessageAsync("I lack the permissions to change my nickname");
         }
 
         [Command("nickname")]
         public async Task ChangeNick() {
-            IGuildUser user = Context.Guild.GetUser(Context.Client.CurrentUser.Id) as IGuildUser;
+
+          var guilds = Context.Client.Guilds;
+
+          foreach (SocketGuild guild in guilds) {
+            IGuildUser user = guild.GetUser(Context.Client.CurrentUser.Id) as IGuildUser;
 
             if (user.GuildPermissions.ChangeNickname) {
-                await user.ModifyAsync(u => u.Nickname = user.Username, RequestOptions.Default);
-                return;
+              await user.ModifyAsync(u => u.Nickname = user.Username, RequestOptions.Default);
             }
-
-            await Context.Message.Channel.SendMessageAsync("I lack the permissions to change my nickname");
+          }
         }
         #endregion
 

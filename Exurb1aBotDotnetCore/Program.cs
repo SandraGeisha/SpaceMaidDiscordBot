@@ -14,7 +14,6 @@ using Exurb1aBot.Util.EmbedBuilders;
 using Exurb1aBot.Model.Exceptions.QuoteExceptions;
 using Microsoft.Extensions.Configuration;
 using System.IO;
-using Exurb1aBot.Util.Workers;
 using System.Linq;
 
 namespace Exurb1aBot {
@@ -24,7 +23,6 @@ namespace Exurb1aBot {
         private CommandService _commands;
         private ApplicationDbContext _context;
         private IConfiguration _config;
-        private VCWorkerService _workerService;
 
         public static string prefix = "%";
         private string fileName = "removeQuote.txt";
@@ -42,7 +40,6 @@ namespace Exurb1aBot {
             DependencyInjection();
 
             IScoreRepository scoreRepo = _services.GetService<IScoreRepository>();
-            _workerService = new VCWorkerService(scoreRepo);
             Console.WriteLine("Initializing API");
             ApiHelper.InitializeClient();
 
@@ -51,17 +48,16 @@ namespace Exurb1aBot {
             _client.Log += Log;
             _client.ReactionAdded += ReactionAdded;
 
-            _client.UserVoiceStateUpdated += UserVCUpdated;
-            await _client.LoginAsync(TokenType.Bot, _config.GetValue<string>("Tokens:Live"));
+            #if Release
+              await _client.LoginAsync(TokenType.Bot, _config.GetValue<string>("Tokens:Live"));
+            #elif Staging
+              await _client.LoginAsync(TokenType.Bot, _config.GetValue<string>("Tokens:Staging"));
+            #else
+              await _client.LoginAsync(TokenType.Bot, _config.GetValue<string>("Tokens:Development"));
+            #endif
             await _client.StartAsync();
             // Block this task until the program is closed.
             await Task.Delay(-1);
-        }
-
-        private async Task UserVCUpdated(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3) {
-            if (arg3.VoiceChannel != null) {
-                await _workerService.AddWorkerToChannel(arg3.VoiceChannel);
-            }
         }
 
         private async Task ReactionAdded(Cacheable<IUserMessage,ulong> ch,ISocketMessageChannel chanel,SocketReaction reaction) {
@@ -83,10 +79,12 @@ namespace Exurb1aBot {
 
             if (reaction.Emote.Name == "💬" && !msg.Author.IsBot) {
                     try {
+                    IGuildUser author = msg.Author as IGuildUser;
                     await QuoteModule.BotAddQuote(_services.GetService<IQouteRepository>(),
                         _services.GetService<IScoreRepository>(), _services.GetService<IUserRepository>(),
+                      _services.GetService<IServerRepository>(),
                         chanel, msg.Content, msg.Id, reaction.User.GetValueOrDefault(null) as IGuildUser
-                        , msg.Author as IGuildUser, msg.Timestamp.DateTime);
+                        , author, msg.Timestamp.DateTime,author.Guild.Id);
                     }
                         catch (Exception e) {
                     if (e.GetType().Equals(typeof(QuotingYourselfException)))
@@ -125,6 +123,7 @@ namespace Exurb1aBot {
                 .AddScoped<IUserRepository,UserRepository>()
                 .AddScoped<IScoreRepository,ScoreRepository>()
                 .AddScoped<ILocationRepository,LocationRepository>()
+                .AddScoped<IServerRepository,ServerRepository>()
                 .AddOptions()
                 .BuildServiceProvider();
 
@@ -173,7 +172,7 @@ namespace Exurb1aBot {
         }
 
         private async Task ListCommands(ICommandContext context) {
-            await EmbedBuilderFunctions.GiveAllCommands(_commands,context,"Unkown Command");
+            await EmbedBuilderFunctions.GiveAllCommands(_commands,context,_services,"Unkown Command");
         }
 
         private async Task NoPermission(string reason, ISocketMessageChannel channel) {
